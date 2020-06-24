@@ -1,5 +1,5 @@
 import { Component, OnInit,Input, ViewEncapsulation,OnChanges, SimpleChanges, DoCheck, AfterContentInit, AfterContentChecked,
-   AfterViewInit, AfterViewChecked } from '@angular/core';
+   AfterViewInit, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-server-elements',
@@ -10,6 +10,7 @@ import { Component, OnInit,Input, ViewEncapsulation,OnChanges, SimpleChanges, Do
 export class ServerElementsComponent implements OnInit,OnChanges {
   @Input('srvElement') element: {type: string, name: string, content: string};
   @Input() name: string;
+  @ViewChild('heading') header : ElementRef;
 
   constructor() { 
     console.log('constructor called!')
@@ -17,11 +18,12 @@ export class ServerElementsComponent implements OnInit,OnChanges {
 
   ngOnChanges(changes : SimpleChanges) {
     console.log('ngOnChanges called!')
-    console.log(changes)
+    console.log('Text Content'+ this.header.nativeElement.textContent)
   }
 
   ngOnInit(): void { 
     console.log('ngOnInit called!')
+    console.log('')
   }
 
   ngDoCheck() {
@@ -38,6 +40,7 @@ export class ServerElementsComponent implements OnInit,OnChanges {
 
   ngAfterViewInit() {
     console.log('ngAfterViewInit called!')
+    console.log('Text Content'+ this.header.nativeElement.textContent)
   }
 
   ngAfterViewChecked() {
