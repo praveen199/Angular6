@@ -6,12 +6,16 @@ import { AccountService } from '../accounts.service'
   selector: 'app-new-account',
   templateUrl: './new-account.component.html',
   styleUrls: ['./new-account.component.css'],
- // providers: [LoginService] 							// removed LoginService
+ // providers: [LoginService] 							
 })
 export class NewAccountComponent {
 
   constructor(private loginService : LoginService,
-              private accountService : AccountService) {}
+              private accountService : AccountService) {
+     this.accountService.statusUpdated.subscribe(
+       (status : string) => alert('New Status : ' + status)
+     )           
+    }
 
   onCreateAccount(accountName: string, accountStatus: string) {
 

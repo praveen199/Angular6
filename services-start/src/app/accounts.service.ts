@@ -18,7 +18,7 @@ export class AccountService {
       status: 'unknown'
     }
   ];
-  statusUpdated = new EventEmitter<string>();
+  statusUpdated = new EventEmitter<string>(); // need to add in 9.9 : Using Services for Cross-Component Communication
 
   constructor(private loggingService: LoginService) {}
 
