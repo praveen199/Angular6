@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { AccountComponent } from './account/account.component';
 import { NewAccountComponent } from './new-account/new-account.component';
+import { AccountService } from './accounts.service';
+import { LoginService } from './login.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,7 @@ import { NewAccountComponent } from './new-account/new-account.component';
     FormsModule,
     //HttpModule
   ],
-  providers: [],
+  providers: [AccountService,LoginService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
