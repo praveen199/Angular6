@@ -1,0 +1,5442 @@
+1. Getting Started
+--------------------------------------------------------------------------------
+	1.Install node.js
+	2.open command prompt and type ng new my-first-app
+	
+
+1.6 : Editing the First App
+--------------------------------------------------------------------------------
+app.component.html
+-------------------
+<input type="text"/>
+<p>{{ name }}</p>
+
+app.component.ts
+-------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  name = 'Max';   // Change Title amd value
+}
+
+* If we want to use ngModel component then we have to import FormsModule.
+
+app.component.html
+-------------------
+<input type="text" [(ngModel)]="name"/>
+<p>{{ name }}</p>
+
+app.component.ts
+-------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  name = 'Max';
+}
+
+app.module.ts
+-----------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import {FormsModule}   from '@angular/forms'; //imported form module
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule //imported form module
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+1.7 : Course Structure
+--------------------------------------------------------------------------------
+ 
+Getting started --->The Basic ---> Components & Databinding ----> Directives -----> Services & Dependency Injection ----> Routing
+																															|
+																															|
+				Deployment <---- Optimizations & ngModules <---	Authentication <---	http <--- Pipes	<--- Forms <--- Observables
+																														
+
+
+1.10 : A Basic Project Setup using Bootstrap for Styling
+--------------------------------------------------------------------------------
+* Empty app.component.html.
+* Remove FormsModule from app.module.ts.
+
+F:\Workspace\TechM\Angular6\my-first-app>npm install --save bootstrap   // It will install bootstrap locally into mode_modules folder
+										>npm install bootstrap			// both command will work
+
+* To use it angular aware of it. so we to add in config file i.e. angular.json file.
+
+ "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css"
+            ]
+			
+* save and re-run ng server
+
+* Now to browser --> go to developer tools(F12) --> Go to Elements ---> <head> Section ---> 1st <style> it is bootstrap
+	
+
+2. The Basics
+--------------------------------------------------------------------------------
+
+2.1 :  Module Introduction
+--------------------------------------------------------------------------------
+
+2.2 : How an Angular App gets Loaded and Started
+--------------------------------------------------------------------------------
+
+index.html --->  This is the file served by the server,this is the single page which is served by the server.
+
+<app-root> ---> It is our own componenet.
+
+index.html ---> app.component.ts ---> app.component.html  
+								 ---> app.component.css
+
+main.ts ---> This is the file executed first.
+
+2.3 : Components are Important
+--------------------------------------------------------------------------------
+* Component divide application into different reusable components.
+
+2.4 : Creating a New Component
+--------------------------------------------------------------------------------
+* Crate a folder inside app folder named as server,and create server.component.ts file.
+
+server.component.ts
+----------------------
+import { Component } from '@angular/core';
+@Component({
+    selector : 'app-server',
+    templateUrl : './server.component.html'
+})
+
+export class ServerComponent {
+}
+
+server.component.html
+-----------------------
+<p>The Server Component</p>
+
+* Now we have created server component and if we want to use it then we have to register in on app.module.ts.
+
+2.5 : Understanding the Role of AppModule and Component Declaration
+-------------------------------------------------------------------------
+* Angular uses componenets to build the application and use module to bundle into package.
+
+* We have to used NgModule decorator to register new components.
+
+app.module.ts
+--------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core'; //Decorator
+
+import { AppComponent } from './app.component';
+import { ServerComponent } from './server/server.component'; // new componenet
+@NgModule({
+  declarations: [
+    AppComponent,
+    ServerComponent // // new componenet
+  ],
+  imports: [
+    BrowserModule,
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+2.6 : Using Custom Components
+-------------------------------------------------------------------------
+* We are not going to change anything in index.html,we have to change in app.component.html.
+
+app.component.html
+---------------------
+<h3>I am in app component !</h3>
+<hr>
+<app-server></app-server>
+
+* Go to browser ---> http://localhost:4200/
+
+2.7 : Creating Components with the CLI _ Nesting Components
+-------------------------------------------------------------------------
+F:\Workspace\TechM\Angular6\my-first-app\src\app>ng g c servers
+
+servers.component.html
+-----------------------
+<app-server></app-server>
+<app-server></app-server>
+
+app.module.ts
+-----------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+import { ServerComponent } from './server/server.component';
+import { ServersComponent } from './servers/servers.component'; //CLI will automatically do it.
+@NgModule({
+  declarations: [
+    AppComponent,
+    ServerComponent,
+    ServersComponent  //CLI will automatically do it.
+  ],
+  imports: [
+    BrowserModule,
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+servers.component.ts
+----------------------
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers', // check selector
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+}
+
+app.component.html
+----------------------
+<h3>I am in app component !</h3>
+<hr>
+<app-servers></app-servers>
+
+NOTE : UP to here calling style like app module - servers module - server module.
+
+2.8 : Working with Component Templates
+-------------------------------------------------------------------------
+* Define html code into type script code.
+
+servers.component.html
+----------------------
+//removed entries from here
+
+servers.component.ts
+----------------------
+@Component({
+  selector: 'app-servers',
+  template: '<app-server></app-server><app-server></app-server>',//removed templateUrl and placed template
+  styleUrls: ['./servers.component.css']
+})
+
+* At least 1 component required in a template.
+
+2.9 : Working with Component Styles
+-------------------------------------------------------------------------
+app.component.html
+----------------------
+<div class="continer">
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>I am in app component !</h3>
+            <hr>
+            <app-servers></app-servers>
+        </div>
+    </div>
+</div>
+
+app.component.css
+----------------------
+h3 {
+    color: darkblue;
+}
+
+app.component.ts
+-------------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  //styleUrls: ['./app.component.css']
+  styles: ['h3 { font-weight: normal; color : blue}']
+})
+export class AppComponent {
+  name = 'Max';
+}
+
+NOTE : If you change app.component.ts for css then remove all entries from app.component.css.
+
+2.10 : Fully Understanding the Component Selector
+-------------------------------------------------------------------------
+Select by id is not working in angular and sudo selector hover also not work.
+
+servers.component.ts
+------------------------
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  //selector: 'app-servers' //select by element
+  //selector: '[app-servers]',//select by attribute
+  selector: '.app-servers',//select by class
+  template: '<app-server></app-server><app-server></app-server>',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+}
+
+app.component.html
+---------------------
+<h3>I am  in AppComponent</h3>
+<!--<app-servers></app-servers>--> //select by element
+<!--<div app-servers></div>--> //select by attribute
+<div class="app-servers"></div>  //select by class
+
+2.12 : What is Databinding
+-------------------------------------------------------------------------
+* Databinding is a communication between typescript code and html code.
+
+---------------														 --------------------
+			  |-------------------OutPut Data-------------------->	|					|
+Type Script	  |			String InterPolation						|	 HTML			|
+			  |			Property Binding							|					|
+			  |<-------------------InPut Data---------------------	|					|
+---------------			Event Binding 								--------------------
+
+
+Suppose we want to show code of type script to html we can do it using
+1.String Interpolations {{ data}}
+2.Propert Binding [property]="data"
+
+Html to type script we can do it using
+1.Event Binding (event) ="expression"
+
+combination of both is called as two way binding [(ngModel)] = "data"
+
+
+2.13 : String Interpolation
+-------------------------------------------------------------------------
+server.component.ts
+----------------------
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'app-server',
+    templateUrl: './server.component.html'
+})
+export class ServerComponent {
+
+    serverId: number = 10;
+    serverStatus: string = 'offline';
+
+	//if called by using method
+    getServerStatus () {
+        return this.serverStatus; 
+    }
+}
+server.component.html
+-------------------------
+<!--<p>{{ 'Server'}} With ID {{ serverId }} is {{ serverStatus }} </p>--> //called by string variable
+
+<p>{{ 'Server'}} With ID {{ serverId }} is {{ getServerStatus() }} </p> //called by method 
+
+
+2.14 : Property Binding
+-------------------------------------------------------------------------
+[] - square bracket define property binding in angular.
+
+servers.component.ts
+-----------------------
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  constructor() { 
+   setTimeout (() => {
+     this.allowNewServer=true
+   },2000)
+  }
+  
+  ngOnInit(): void {
+  }
+}
+
+servers.component.html
+-----------------------------
+<button class="btn btn-primary" [disabled] = "!allowNewServer">Add Server</button> //[disabled] here allow dynamically that's why placed in []
+
+2.15: Property Binding vs String Interpolation
+-------------------------------------------------------------------------
+servers.component.html
+-------------------------
+<button class="btn btn-primary" [disabled] = "!allowNewServer">Add Server</button>
+<p>{{ allowNewServer  }}</p>
+
+2.16 : Event Binding
+-------------------------------------------------------------------------
+like [] are used for property binding so () is used for event binding.
+
+servers.component.ts
+--------------------------
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = 'No Server was created!';
+  constructor() { 
+   setTimeout (() => {
+     this.allowNewServer=true
+   },2000)
+  }
+  
+  ngOnInit(): void {
+  }
+  onCreateServer() {
+    this.serverCreationStatus = 'Server was created!';
+  }
+}
+
+servers.component.html
+-----------------------
+<button class="btn btn-primary" [disabled] = "!allowNewServer" (click)="onCreateServer()">Add Server</button>
+<p>{{ serverCreationStatus  }}</p>
+
+
+2.18 : Passing and Using Data with Event Binding
+-------------------------------------------------------------------------
+$event -- It is used to pass argument to method we are calling.
+
+servers.component.ts
+--------------------------
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = 'No Server was created!';
+  serverName = ' ';
+  constructor() { 
+   setTimeout (() => {
+     this.allowNewServer=true
+   },2000)
+  }
+  
+  ngOnInit(): void {
+  }
+  onCreateServer() {
+    this.serverCreationStatus = 'Server was created!';
+  }
+  onUpdateServerName(event : any) {
+     console.log(event);
+     this.serverName = event.target.value;
+    }
+}
+
+servers.component.html
+-----------------------
+<label>Server Name</label>
+<input type="text" class="form-control" (input)="onUpdateServerName($event)">
+<p>{{ serverName }}</p>
+
+<button class="btn btn-primary" [disabled] = "!allowNewServer" (click)="onCreateServer()">Add Server</button>
+<p>{{ serverCreationStatus  }}</p>
+
+
+2.19: Two-Way-Databinding
+-------------------------------------------------------------------------
+Using 2 way Data Binding we can use event and property binding like [(ngModel)].
+[] - property binding
+() - event binding
+
+
+servers.component.html
+-----------------------
+<label>Server Name</label>
+<input type="text" class="form-control" [(ngModel)] = "serverName">
+<p>{{ serverName }}</p>
+
+<button class="btn btn-primary" [disabled] = "!allowNewServer" (click)="onCreateServer()">Add Server</button>
+<p>{{ serverCreationStatus  }}</p>
+
+servers.component.ts
+--------------------------
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = 'No Server was created!';
+  serverName = 'TestServer'; // Only given serverName
+  constructor() { 
+   setTimeout (() => {
+     this.allowNewServer=true
+   },2000)
+  }
+  
+  ngOnInit(): void {
+  }
+  onCreateServer() {
+    this.serverCreationStatus = 'Server was created!';
+  }
+  onUpdateServerName(event : any) {
+     this.serverName = event.target.value;
+    }
+}
+
+http://localhost:4200/
+
+
+2.21 : Combining all Forms of Databinding
+-------------------------------------------------------------------------
+servers.component.ts
+--------------------------
+onCreateServer() {
+    this.serverCreationStatus = 'Server was created!' + this.serverName;
+}
+  
+2.23 : Understanding Directives
+-------------------------------------------------------------------------
+Directives - Directives are instructions in the DOM,which decide how logic implementation can be done.
+		   - Directives in AngularJS are JavaScript class which is declared as @directive
+
+2.24 : Using ngIf to Output Data Conditionally
+-------------------------------------------------------------------------
+* is mandatory in ngIf because it is structural directive means it will add something or doesn't add something.
+
+servers.component.ts 
+--------------------------
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = 'No Server was created!';
+  serverName = 'TestServer';
+  serverCreated = false; // new entry
+  constructor() { 
+   setTimeout (() => {
+     this.allowNewServer=true
+   },2000)
+  }
+  
+  ngOnInit(): void {
+  }
+  onCreateServer() {
+    this.serverCreated = true;
+    this.serverCreationStatus = 'Server was created! Name is ' + this.serverName;
+  }
+  onUpdateServerName(event : any) {
+     this.serverName = event.target.value;
+    }
+}
+servers.component.html
+-----------------------
+<label>Server Name</label>
+<input type="text" class="form-control" [(ngModel)] = "serverName">
+
+<button class="btn btn-primary" [disabled] = "!allowNewServer" (click)="onCreateServer()">Add Server</button>
+<p *ngIf="serverCreated">Server was created & server name is {{ serverName }}</p>
+
+
+2.25 : Enhancing ngIf with an Else Condition
+-------------------------------------------------------------------------
+# -- It is used for to define local refrence
+
+servers.component.html
+-----------------------
+<label>Server Name</label>
+<input type="text" class="form-control" [(ngModel)] = "serverName">
+
+<button class="btn btn-primary" [disabled] = "!allowNewServer" (click)="onCreateServer()">Add Server</button>
+<p *ngIf="serverCreated ; else noServer">Server was created & server name is {{ serverName }}</p>
+<ng-template #noServer>
+        <p>No Server was created!</p>
+</ng-template>
+
+2.26: Styling Elements Dynamically with ngStyle
+-------------------------------------------------------------------------
+* Attribute directive doesn't add or remove elements,they only change the element they were placed on.
+
+* ngStyle - is used for update style dynamically
+
+* constructor - it a method which every typescript class has which is called when componenet is created.
+
+server.component.ts
+-----------------------
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'app-server',
+    templateUrl: './server.component.html'
+})
+export class ServerComponent {
+
+    serverId: number = 10;
+    serverStatus: string = 'offline';
+
+    constructor() {
+        this.serverStatus = Math.random() > 0.5 ? 'online' : 'offline';
+    }
+    getServerStatus () {
+        return this.serverStatus;
+    }
+
+    getColor() {
+        return this.serverStatus === 'online' ? 'green' : 'red';
+	}
+}
+
+server.component.html
+------------------------
+<p [ngStyle]="{backgroundColor:getColor() } ">{{ 'Server'}} With ID {{ serverId }} is {{ getServerStatus() }} </p>
+
+servers.component.html
+--------------------------
+<app-server></app-server>
+<app-server></app-server>
+
+2.27 : Applying CSS Classes Dynamically with ngClass
+-------------------------------------------------------------------------
+
+2.28 : Outputting Lists with ngFor
+-------------------------------------------------------------------------
+* For any kind of structural directive we have to place * like *ngFor.
+
+servers.component.ts : 
+--------------------------
+export class ServersComponent implements OnInit {
+  allowNewServer = false;
+  serverCreationStatus = 'No Server was created!';
+  serverName = 'TestServer';
+  serverCreated = false;
+  servers = ['Testserver','Testserver 2']; //new 
+  constructor() { 
+   setTimeout (() => {
+     this.allowNewServer=true
+   },2000)
+  }
+  
+  ngOnInit(): void {
+  }
+  onCreateServer() {
+    this.serverCreated = true;
+    this.servers.push(this.serverName); //new 
+    this.serverCreationStatus = 'Server was created! Name is ' + this.serverName;
+  }
+  onUpdateServerName(event : any) {
+     this.serverName = event.target.value;
+    }
+}
+servers.component.html
+-----------------------
+<label>Server Name</label>
+<input type="text" class="form-control" [(ngModel)] = "serverName">
+
+<button class="btn btn-primary" [disabled] = "!allowNewServer" (click)="onCreateServer()">Add Server</button>
+<p *ngIf="serverCreated">Server was created & server name is {{ serverName }}</p>
+<app-server *ngFor="Let server of servers"></app-server> 
+
+* servers is variable which we have defined in type script code and it will loop in html file.
+
+
+3. Course Project - The Basics
+--------------------------------------------------------------------------------
+
+3.1 : Project Introduction
+--------------------------------------------------------------------------------
+
+3.2 : Planning the App
+--------------------------------------------------------------------------------
+Image : Planning the App
+
+3.4 : Setting up the Application
+--------------------------------------------------------------------------------
+* Create a new project.
+* Remove every thing form aoo.component.html
+* Remove title = 'ng4-complate-guide'; form app.component.ts
+* Install bootstrap on project.
+
+* Change in angular.json folder.
+
+ "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css"
+            ]
+			
+app.componenet.html
+-----------------------
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h2>I'm Working</h2>
+		</div>
+	</div>
+</div>
+
+3.5 : Creating the Components
+--------------------------------------------------------------------------------
+* Create header folder and create header.component.ts inside app folder.
+* It is not identitfied by angular so we need to add component.
+* We have to create selector and templateUrl so that we can use this selector.
+* after creating header component we need to create other component.
+
+F:\Workspace\TechM\Angular6\ng4-complate-guide\src\app>ng g c recipes --skipTests  // --spec false used not to create test file.
+F:\Workspace\TechM\Angular6\ng4-complate-guide\src\app>ng g c recipes/recipe-list
+F:\Workspace\TechM\Angular6\ng4-complate-guide\src\app>ng g c recipes/recipe-list/recipe-item
+
+F:\Workspace\TechM\Angular6\ng4-complate-guide\src\app>ng g c shopping-list --skipTests 
+F:\Workspace\TechM\Angular6\ng4-complate-guide\src\app>ng g c shopping-list/shopping-edit --skipTests
+
+* Commited in git 3.5 : Creating the Components
+
+3.6 : Using the Components
+--------------------------------------------------------------------------------
+* Commited in git 3.6 : Using the Components
+	
+3.7 : Adding a Navigation Bar
+--------------------------------------------------------------------------------
+* Commited in git 3.7 : Adding a Navigation Bar
+
+4. Debugging
+--------------------------------------------------------------------------------
+4.1 : Understanding Angular Error Messages
+--------------------------------------------------------------------------------
+app.component.ts
+----------------------
+export class AppComponent {
+  servers;     // we only declaire it but not defined it
+
+  onAddServer() {
+    this.servers.push('Another Server');
+  }
+
+  onRemoveServer(id: number) {
+    const position = id + 1;
+    this.servers.splice(position, 1);
+  }
+}
+
+app.component.ts
+----------------------
+export class AppComponent {
+  servers =[];
+
+  onAddServer() {
+    this.servers.push('Another Server');
+  }
+
+  onRemoveServer(id: number) {
+    const position = id + 1;
+    this.servers.splice(position, 1);
+  }
+}
+
+
+4.2 : Debugging Code in the Browser Using Sourcemaps
+--------------------------------------------------------------------------------
+
+
+
+5. Components _ Databinding Deep Dive (my-first-app in git)
+--------------------------------------------------------------------------------
+
+5.1 : Module Introduction
+--------------------------------------------------------------------------------
+
+
+5.2 : Splitting Apps into Components
+--------------------------------------------------------------------------------
+* All logic written in 1 componenet so we have to split it.
+* Create new component
+
+F:\Workspace\TechM\Angular6\my-first-app>ng g c cockpit --skipTests
+
+F:\Workspace\TechM\Angular6\my-first-app>ng g c server-elements --skipTests
+
+5.3 : Property _ Event Binding Overview
+--------------------------------------------------------------------------------
+
+5.4. Binding to Custom Properties
+--------------------------------------------------------------------------------
+* Prevent app for crasing we are using commenting methods in cockpit.component.ts.
+  Ctrl+K+C - comment multiple line
+  Ctrl+K+U - uncomment multiple line
+  Ctrl+Shift+F - searh in workspace
+ 
+* All property defiend inside component are accesible within componenet only not from outside.
+* Input decorator in Angular - @Input() - parent component to child component
+* ref - https://blog.cloudboost.io/input-decorator-in-angular-66f4b55cd951
+
+* go to browser : http://localhost:4200
+
+app.component.ts
+----------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  serverElements = [{type :'server',name : 'TestServer',content :'Just a test!'}]; // Defined 
+}
+
+app.component.html
+-------------------------
+<div class="container">
+  <app-cockpit></app-cockpit>
+  <hr>
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-elements *ngFor = "let serverElements of serverElements"
+      [element]="serverElements"></app-server-elements>
+    </div>
+  </div>
+</div>
+
+
+server-elements.component.ts
+------------------------------
+import { Component, OnInit,Input } from '@angular/core';
+
+@Component({
+  selector: 'app-server-elements',
+  templateUrl: './server-elements.component.html',
+  styleUrls: ['./server-elements.component.css']
+})
+export class ServerElementsComponent implements OnInit {
+  @Input() element: {type: string, name: string, content: string}; // Defiened decorator @Input
+
+  constructor() { }
+
+  ngOnInit(): void { 
+  }
+}
+
+server-elements.component.html
+-------------------------------
+<div class="panel panel-default">
+<div class="panel-heading">{{ element.name }}</div>
+<div class="panel-body">
+  <p>
+    <strong *ngIf="element.type === 'server'" style="color: red">{{ element.content }}</strong>
+    <em *ngIf="element.type === 'blueprint'">{{ element.content }}</em>
+  </p>
+</div>
+</div>
+
+5.5 : Assigning an Alias to Custom Properties
+--------------------------------------------------------------------------------
+* If we want to use alias to bind property we have to pass inside @Input.
+
+app.component.html
+-------------------------
+<div class="container">
+  <app-cockpit></app-cockpit>
+  <hr>
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-elements *ngFor = "let serverElements of serverElements"
+      [srvElement]="serverElements"></app-server-elements>
+    </div>
+  </div>
+</div>
+
+server-elements.component.ts
+------------------------------
+import { Component, OnInit,Input } from '@angular/core';
+
+@Component({
+  selector: 'app-server-elements',
+  templateUrl: './server-elements.component.html',
+  styleUrls: ['./server-elements.component.css']
+})
+export class ServerElementsComponent implements OnInit {
+  @Input('srvElement') element: {type: string, name: string, content: string};
+
+  constructor() { }
+
+  ngOnInit(): void { 
+  }
+
+}
+
+5.6 : Binding to Custom Events
+--------------------------------------------------------------------------------
+* Child componenet to parent component -   @Output()
+
+app.component.html
+-------------------------
+<div class="container">
+  <app-cockpit 
+    (serverCreated)="onServerAdded($event)"
+    (blueprintAdded)="onBlueprintAdded($event)"
+  ></app-cockpit>
+  <hr>
+  <div class="row">
+    <div class="col-xs-12">
+      <app-server-elements *ngFor = "let serverElements of serverElements"
+      [srvElement]="serverElements"></app-server-elements>
+    </div>
+  </div>
+</div>
+
+app.component.ts
+----------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  serverElements = [{type :'server',name : 'TestServer',content :'Just a test!'}];
+
+  onServerAdded(serverData : {serverName : string, serverContent : string}) {
+    this.serverElements.push({
+      type: 'server',
+      name: serverData.serverName,
+      content: serverData.serverContent
+    });
+  }
+
+  onBlueprintAdded(blueprintData : {serverName : string, serverContent : string}) {
+    this.serverElements.push({
+      type: 'blueprint',
+      name: blueprintData.serverName,
+      content: blueprintData.serverContent
+    });
+  }
+}
+
+cockpit.component.ts
+------------------------
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-cockpit',
+  templateUrl: './cockpit.component.html',
+  styleUrls: ['./cockpit.component.css']
+})
+export class CockpitComponent implements OnInit {
+  @Output() serverCreated = new EventEmitter<{serverName : string, serverContent : string}>();
+  @Output() blueprintCreated  = new EventEmitter<{serverName : string, serverContent : string}>();;
+  newServerName = '';
+  newServerContent = '';
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  onAddServer() { 
+    this.serverCreated.emit({serverName : this.newServerName, serverContent : this.newServerContent});
+  }
+
+  onAddBlueprint() {
+    this.blueprintCreated.emit({serverName : this.newServerName, serverContent : this.newServerContent});
+  }
+}
+
+5.7 : Assigning an Alias to Custom Events
+--------------------------------------------------------------------------------
+cockpit.component.ts
+------------------------
+@Output('bpCreated') blueprintCreated  = new EventEmitter<{serverName : string, serverContent : string}>();;
+
+app.component.html
+-------------------------
+  <app-cockpit 
+    (serverCreated)="onServerAdded($event)"
+    (bpCreated)="onBlueprintAdded($event)"
+  ></app-cockpit>
+
+5.8 : Custom Property and Event Binding Summary
+--------------------------------------------------------------------------------
+
+
+5.9 : Understanding View Encapsulation
+--------------------------------------------------------------------------------
+server-elements.component.css
+--------------------------------
+p {
+    color: blue;
+  }
+  
+* Press F12 to see on browser.
+
+5.10 : More on View Encapsulation
+--------------------------------------------------------------------------------
+* Press F12 to see on browser.
+
+server-elements.component.ts
+------------------------------
+@Component({
+  selector: 'app-server-elements',
+  templateUrl: './server-elements.component.html',
+  styleUrls: ['./server-elements.component.css'],
+  encapsulation: ViewEncapsulation.Emulated //None, Native ----> new entry
+})
+
+server-elements.component.css
+--------------------------------
+p {
+    color: blue;
+  }
+  
+label {
+ color: red; 
+}
+
+5.11 : Using Local References in Templates
+--------------------------------------------------------------------------------
+* Here we are not using 2 way databinding.
+  # - used to define refrence
+   
+* Press F12 to see on browser - new input refrence.
+
+cockpit.component.html
+--------------------------
+<div class="row">
+    <div class="col-xs-12">
+      <p>Add new Servers or blueprints!</p>
+      <label>Server Name</label>
+      <!-- <input type="text" class="form-control" [(ngModel)]="newServerName"> -->
+      <input type="text" 
+        class="form-control" 
+        #serverNameInput>
+      <label>Server Content</label>
+      <input type="text" class="form-control" [(ngModel)]="newServerContent">
+      <br>
+      <button
+        class="btn btn-primary"
+        (click)="onAddServer(serverNameInput)">Add Server</button>
+      <button
+        class="btn btn-primary"
+        (click)="onAddBlueprint(serverNameInput)">Add Server Blueprint</button>
+    </div>
+  </div>
+  
+cockpit.component.ts
+--------------------------
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-cockpit',
+  templateUrl: './cockpit.component.html',
+  styleUrls: ['./cockpit.component.css']
+})
+export class CockpitComponent implements OnInit {
+  @Output() serverCreated = new EventEmitter<{serverName : string, serverContent : string}>();
+  @Output('bpCreated') blueprintCreated  = new EventEmitter<{serverName : string, serverContent : string}>();
+  //newServerName = '';
+  newServerContent = '';
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  onAddServer(nameInput : HTMLInputElement) { 
+    console.log(nameInput.value)
+    this.serverCreated.emit({serverName : nameInput.value, 
+                            serverContent : this.newServerContent});
+  }
+
+  onAddBlueprint(nameInput : HTMLInputElement) {
+    this.blueprintCreated.emit({serverName : nameInput.value, 
+                              serverContent : this.newServerContent});
+  }
+}
+
+
+5.12 : Getting Access to the Template _ DOM with @ViewChild
+--------------------------------------------------------------------------------
+* In local refrence we are passing refrence in hmtl page but sometime you want to get access before calling a method.
+
+cockpit.component.html
+---------------------------
+<div class="row">
+    <div class="col-xs-12">
+      <p>Add new Servers or blueprints!</p>
+      <label>Server Name</label>
+      <!-- <input type="text" class="form-control" [(ngModel)]="newServerName"> -->
+      <input type="text" 
+        class="form-control" 
+        #serverNameInput>
+      <label>Server Content</label>
+      <!-- <input type="text" class="form-control" [(ngModel)]="newServerContent"> -->
+      <input type="text" 
+        class="form-control" 
+        #serverContentInput>
+      <br>
+      <button
+        class="btn btn-primary"
+        (click)="onAddServer(serverNameInput)">Add Server</button>
+      <button
+        class="btn btn-primary"
+        (click)="onAddBlueprint(serverNameInput)">Add Server Blueprint</button>
+    </div>
+  </div>
+
+cockpit.component.ts
+------------------------
+import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
+
+@Component({
+  selector: 'app-cockpit',
+  templateUrl: './cockpit.component.html',
+  styleUrls: ['./cockpit.component.css']
+})
+export class CockpitComponent implements OnInit {
+  @Output() serverCreated = new EventEmitter<{serverName : string, serverContent : string}>();
+  @Output('bpCreated') blueprintCreated  = new EventEmitter<{serverName : string, serverContent : string}>();
+  //newServerName = '';
+  //newServerContent = '';
+  @ViewChild('serverContentInput') serverContentInput : ElementRef;
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  onAddServer(nameInput : HTMLInputElement) { 
+
+    this.serverCreated.emit({serverName : nameInput.value, 
+                            serverContent : this.serverContentInput.nativeElement.value
+                          });
+  }
+
+  onAddBlueprint(nameInput : HTMLInputElement) {
+    this.blueprintCreated.emit({serverName : nameInput.value, 
+                              serverContent : this.serverContentInput.nativeElement.value
+                            });
+  }
+}
+
+5.13 : Projecting Content into Components with ng-content
+--------------------------------------------------------------------------------
+
+
+5.14 : Understanding the Component Lifecycle
+--------------------------------------------------------------------------------
+* ngOnInit() - It is a life cycle hook and angular support a lot of life cycle hook.
+* Go to pdf file Lifecycle
+
+5.15 : Seeing Lifecycle Hooks in Action
+--------------------------------------------------------------------------------
+* constructor() - called 1st
+  ngOnInit() - called 2nd
+  
+* constructor() - called 1st
+  ngOnChanges() - called 2nd 
+  ngOnInit() - called 3rd
+
+* constructor() - called 1st
+  ngOnChanges() - called 2nd 
+  ngOnInit() - called 3rd 
+  ngDoCheck() - called 4th
+  
+  ngDoCheck - called when check for every changes
+  
+  
+5.16 : Lifecycle Hooks and Template Access
+--------------------------------------------------------------------------------
+
+
+
+5.17 : Getting Access to ng-content with @ContentChild
+--------------------------------------------------------------------------------
+
+
+
+
+7. Directives Deep Dive (ProjectSeven in git)
+--------------------------------------------------------------------------------
+7.1 : Module Introduction
+--------------------------------------------------------------------------------
+* Attribute directive & structural directive.
+
+* Attribute - Attribute directive sit on element just like attribute. 
+* structural directive - like ngIf.If it is false it will remove complete dom from UI but Attribute directive will not do it.
+
+
+Attribute directive 						| 		Structural directive
+											|
+1.looks like normal HTML attribute			|1.looks like normal HTML attribute but having a leading *.
+(possibly with databinding & event binding) |
+											|
+2.Only affected/change the element they are |2.Affect the whole area of the dom.(element got added/removed)
+added to									|
+
+7.2 : ngFor and ngIf Recap
+--------------------------------------------------------------------------------
+* We can have more then 1 structural directive on same element.
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">Only show odd numbers
+	  </button>
+      <br><br>
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+			<li class="list-group-item" *ngFor="let odd of oddNumbers">
+				{{ odd }}
+			</li>
+        </div>     
+        <div *ngIf="!onlyOdd">
+            <li class="list-group-item" *ngFor="let even of evenNumbers">
+				{{ even }}
+			</li>
+        </div>  
+      </ul>
+    </div>
+  </div>
+</div>
+app.component.css
+--------------------------------------------------------------------------------
+.container {
+  margin-top: 30px;
+}
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  oddNumbers = [1,3,5];
+  evenNumbers = [2,4];
+  onlyOdd = false;
+}
+
+7.3 : ngClass and ngStyle Recap
+--------------------------------------------------------------------------------
+
+app.component.css
+--------------------------------------------------------------------------------
+.container {
+  margin-top: 30px;
+}
+
+.odd { 			// this is added here
+color : red
+}
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">Only show odd numbers
+	  </button>
+      <br><br>
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+      <li class="list-group-item" 
+      [ngClass]="{odd : odd % 2 !== 0}"   // ngClass directive
+      [ngStyle]="{backgroundColor : odd % 2 !== 0 ? 'yellow' : 'transparent' }" //ngStyle directive
+      *ngFor="let odd of oddNumbers">
+				{{ odd }}
+			</li>
+        </div>     
+        <div *ngIf="!onlyOdd">
+            <li class="list-group-item" 
+            [ngClass]="{odd : even % 2 !== 0}" // ngClass directive
+            [ngStyle]="{backgroundColor : odd % 2 !== 0 ? 'yellow' : 'transparent' }" //ngStyle directive
+            *ngFor="let even of evenNumbers">
+				{{ even }}
+        </li>
+        </div>  
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+7.4 : Creating a Basic Attribute Directive
+--------------------------------------------------------------------------------
+* create a folder inside app folder as basic-highlight
+* create a file basic-highlight.directive.ts
+* [appBasicHighlight] - create attribute.we are making directly selector attribute.
+* for making a directive we need to @Directive & Directive needs to imported form @angular/core.
+* we need to pass objet to configure the Directive and our directive definetly need a selector.
+* When we are creating this classes at somewhere definitely we are passing parameters that's why we need to define in constructor 
+  and parameter should be ElementRef.
+
+basic-highlight.directive.ts
+--------------------------------------------------------------------------------
+import { Directive, ElementRef, OnInit } from '@angular/core';
+
+@Directive({
+  selector: '[appBasicHighlight]' //maked as select by attribute
+})
+export class BasicHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef) {
+  }
+
+  ngOnInit() {
+    this.elementRef.nativeElement.style.backgroundColor = 'green';
+  }
+}
+
+* Now we have directive and for using it we need to inform to angular that we have new directive.
+
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+
+import { AppComponent } from './app.component';
+import { BasicHighlightDirective } from './basic-highlight/basic-highlight.directive'; // added here
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    BasicHighlightDirective,// added here
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" (click)="onlyOdd = !onlyOdd">Only show odd numbers
+	  </button>
+      <br><br>
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+      <li class="list-group-item" 
+      [ngClass]="{odd : odd % 2 !== 0}"  
+      [ngStyle]="{backgroundColor : odd % 2 !== 0 ? 'yellow' : 'transparent' }"
+      *ngFor="let odd of oddNumbers">
+				{{ odd }}
+			</li>
+        </div>     
+        <div *ngIf="!onlyOdd">
+            <li class="list-group-item" 
+            [ngClass]="{odd : even % 2 !== 0}" 
+            [ngStyle]="{backgroundColor : odd % 2 !== 0 ? 'yellow' : 'transparent' }" 
+            *ngFor="let even of evenNumbers">
+				{{ even }}
+        </li>
+        </div>  
+      </ul>
+      <p appBasicHighlight>Style me with basic directive!</p> // added here,we have maked as select by attribute we can directly use it
+    </div>
+  </div>
+</div>
+ 
+
+7.5 : Using the Renderer to build a Better Attribute Directive
+--------------------------------------------------------------------------------
+* Adding directive directly is not a good practise so we need to render the element.
+
+F:\Workspace\TechM\Angular6\ProjectSeven>ng g d better-highlight
+CREATE src/app/better-highlight.directive.spec.ts (261 bytes)
+CREATE src/app/better-highlight.directive.ts (159 bytes)
+UPDATE src/app/app.module.ts (661 bytes)
+
+* we can delete better-highlight.directive.spec.ts file.
+* Create a foler inside app folder better-hightlight and copy better-highlight.directive.ts into that.
+
+better-highlight.directive.ts
+--------------------------------------------------------------------------------
+import { Directive, OnInit, ElementRef,Renderer2 } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]'
+})
+export class BetterHighlightDirective implements OnInit{
+
+  constructor(private elementRef:ElementRef,private renderer : Renderer2) { }
+
+  ngOnInit() {
+    this.renderer.setStyle(this.elementRef.nativeElement,'background-color','blue')
+  }
+
+}
+
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+//import { HttpModule } from '@angular/http';
+
+import { AppComponent } from './app.component';
+import { BasicHighlightDirective } from './basic-highlight/basic-highlight.directive';
+import { BetterHighlightDirective } from './better-highlight/better-highlight.directive'; // better highlight directive
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    BasicHighlightDirective,
+    BetterHighlightDirective,	// better highlight directive
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+   // HttpModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button
+        class="btn btn-primary"
+        (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+          class="list-group-item"
+          [ngClass]="{odd : odd % 2 !== 0}"
+          [ngStyle]="{backgroundColor : odd % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let odd of oddNumbers">
+          {{ odd }}
+        </li>
+        </div>     
+        <div *ngIf="!onlyOdd">
+            <li
+          class="list-group-item"
+          [ngClass]="{odd : even % 2 !== 0}"
+          [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let even of evenNumbers">
+          {{ even }}
+        </li>
+        </div>  
+      </ul>
+      <p appBasicHighlight>Style me with basic directive!</p>
+      <p appBetterHighlight>Style me with better directive!</p> //  added here
+    </div>
+  </div>
+</div>
+
+
+7.7 : Using HostListener to Listen to Host Events
+--------------------------------------------------------------------------------
+* It always gives blue backgrond,now i want to show blue backgrond when i will hover on it.
+
+* @HostListener - HostListener takes argument name as input.
+
+
+better-highlight.directive.ts
+--------------------------------------------------------------------------------
+import { Directive, OnInit, ElementRef,Renderer2, HostListener } from '@angular/core';
+
+
+@Directive({
+  selector: '[appBetterHighlight]'
+})
+export class BetterHighlightDirective implements OnInit{
+
+  constructor(private elementRef:ElementRef,private renderer : Renderer2) { }
+
+  ngOnInit() {
+   // this.renderer.setStyle(this.elementRef.nativeElement,'background-color','blue')
+  }
+
+  @HostListener('mouseenter') mouseover(eventData : Event) {
+    this.renderer.setStyle(this.elementRef.nativeElement,'background-color','blue');
+  }
+
+  @HostListener('mouseleave') mouseleave(eventData : Event) {
+    this.renderer.setStyle(this.elementRef.nativeElement,'background-color','transparent')
+  }
+
+}
+
+7.8 : Using HostBinding to Bind to Host Properties
+--------------------------------------------------------------------------------
+* We have some other approach where we don't want to use renderer.
+* @HostBinding will take 1 argument.
+
+better-highlight.directive.ts
+--------------------------------------------------------------------------------
+import { Directive, OnInit, ElementRef,Renderer2, HostListener, HostBinding } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]'
+})
+export class BetterHighlightDirective implements OnInit{
+  @HostBinding('style.backgroundColor') backgroundColor : string = 'transparent'; //backgroundColor is a variable
+  constructor(private elementRef:ElementRef,private renderer : Renderer2) { }
+
+  ngOnInit() {
+   // this.renderer.setStyle(this.elementRef.nativeElement,'background-color','blue')
+  }
+
+  @HostListener('mouseenter') mouseover(eventData : Event) {
+   // this.renderer.setStyle(this.elementRef.nativeElement,'background-color','blue');
+    this.backgroundColor = 'blue';
+  }
+
+  @HostListener('mouseleave') mouseleave(eventData : Event) {
+   // this.renderer.setStyle(this.elementRef.nativeElement,'background-color','transparent')
+    this.backgroundColor = 'transparent';
+  }
+}
+
+7.9 : Binding to Directive Properties
+--------------------------------------------------------------------------------
+* Upto here we are hardcoding color.
+* Suppose we have other file from where we are taking color then developer should dynamically add these value.
+* We will use custom dirctive binding.
+
+better-highlight.directive.ts
+--------------------------------------------------------------------------------
+import { Directive, OnInit, ElementRef,Renderer2, HostListener, HostBinding, Input } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]'
+})
+export class BetterHighlightDirective implements OnInit{
+  @Input() defaultColor: string = 'transparent';		// add 2 property for bind
+  @Input('appBetterHighlight') highlightColor: string = 'blue';
+  
+  @HostBinding('style.backgroundColor') backgroundColor : string ;
+  
+  constructor(private elementRef:ElementRef,private renderer : Renderer2) { }
+
+  ngOnInit() {
+    this.backgroundColor = this.defaultColor;
+   // this.renderer.setStyle(this.elementRef.nativeElement,'background-color','blue')
+  }
+
+  @HostListener('mouseenter') mouseover(eventData : Event) {
+   // this.renderer.setStyle(this.elementRef.nativeElement,'background-color','blue');
+    this.backgroundColor = this.highlightColor;
+  }
+
+  @HostListener('mouseleave') mouseleave(eventData : Event) {
+   // this.renderer.setStyle(this.elementRef.nativeElement,'background-color','transparent')
+    this.backgroundColor = this.defaultColor;
+  }
+}
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<p appBasicHighlight>Style me with basic directive!</p>
+<p [appBetterHighlight] = "'red'" [defaultColor] = "'yellow'">Style me with better directive!</p>
+<!-- <p appBetterHighlight [defaultColor] = "'yellow'" [highlightColor] = "'red'">Style me with better directive!</p> -->
+
+//defaultColor & highlightColor are property binding.
+
+7.10 : What Happens behind the Scenes on Structural Directives
+--------------------------------------------------------------------------------
+	* - it is indicate it is structural directive
+* Behind the sceen angular transform into something else.
+
+</ng-template> -  it doesn't render the element but it allow other element to render.
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button
+        class="btn btn-primary"
+        (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+          class="list-group-item"
+          [ngClass]="{odd : odd % 2 !== 0}"
+          [ngStyle]="{backgroundColor : odd % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let odd of oddNumbers">
+          {{ odd }}
+        </li>
+        </div>     
+        <div *ngIf="!onlyOdd">
+            <li
+          class="list-group-item"
+          [ngClass]="{odd : even % 2 !== 0}"
+          [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let even of evenNumbers">
+          {{ even }}
+        </li>
+        </div>  
+        <ng-template [ngIf] = "!onlyOdd">
+          <div>
+              <li
+              class="list-group-item"
+              [ngClass]="{odd : even % 2 !== 0}"
+              [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+              *ngFor="let even of evenNumbers">
+              {{ even }}
+            </li>
+          </div>
+        </ng-template>
+      </ul>
+      <p appBasicHighlight>Style me with basic directive!</p>
+      <p [appBetterHighlight] = "'red'" [defaultColor] = "'yellow'">Style me with better directive!</p>
+      <!-- <p appBetterHighlight [defaultColor] = "'yellow'" [highlightColor] = "'red'">Style me with better directive!</p> -->
+    </div>
+  </div>
+</div>
+
+7.11 : Building a Structural Directive
+--------------------------------------------------------------------------------
+* Now we understood what is the role of * and now we can write out own directive.so let's create a new directive
+* and we will create opposite of ngIf directive means this directive execute when condition is false,ngIf does when condition is true.
+
+F:\Workspace\TechM\Angular6\ProjectSeven>ng g d unless
+
+* Delete unless.directive.spec.ts file.
+
+unless.directive.ts
+--------------------------------------------------------------------------------
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+  //@Input() set unless(condition : boolean) { 				//Now here need condition as input and remember we will use as property binding []
+    @Input() set appUnless(condition : boolean) {    		// we are using property binding so replace it with appUnless
+    if(!condition) {
+      this.vcRef.createEmbeddedView(this.templateRef);
+    } else {
+      this.vcRef.clear();
+    } 
+  }
+  constructor(private templateRef  : TemplateRef<any>,private  vcRef : ViewContainerRef ) { }
+}
+
+*set will change into method.means it is still a property and it will execute when property changes. 
+
+
+* UnlessDirective should be imported into app.module.ts.
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button
+        class="btn btn-primary"
+        (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+          class="list-group-item"
+          [ngClass]="{odd : odd % 2 !== 0}"
+          [ngStyle]="{backgroundColor : odd % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let odd of oddNumbers">
+          {{ odd }}
+        </li>
+        </div>     
+        <!-- <div *ngIf="!onlyOdd">
+            <li
+          class="list-group-item"
+          [ngClass]="{odd : even % 2 !== 0}"
+          [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let even of evenNumbers">
+          {{ even }}
+        </li>
+        </div>   
+        <ng-template [ngIf] = "!onlyOdd">
+          <div>
+              <li
+              class="list-group-item"
+              [ngClass]="{odd : even % 2 !== 0}"
+              [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+              *ngFor="let even of evenNumbers">
+              {{ even }}
+            </li>
+          </div>
+        </ng-template>-->
+        <div *appUnless="onlyOdd">
+            <li
+          class="list-group-item"
+          [ngClass]="{odd : even % 2 !== 0}"
+          [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let even of evenNumbers">
+          {{ even }}
+          </li>
+        </div>  
+      </ul>
+      <p appBasicHighlight>Style me with basic directive!</p>
+      <p [appBetterHighlight] = "'red'" [defaultColor] = "'yellow'">Style me with better directive!</p>
+      <!-- <p appBetterHighlight [defaultColor] = "'yellow'" [highlightColor] = "'red'">Style me with better directive!</p> -->
+    </div>
+  </div>
+</div>
+
+7.12 : Understanding ngSwitch
+--------------------------------------------------------------------------------
+* We bind ngSwitch with property binding.
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  //numbers = [1, 2, 3, 4, 5];
+  oddNumbers = [1,3,5];
+  evenNumbers = [2,4];
+  onlyOdd = false;
+  value = 5;
+}
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <button
+        class="btn btn-primary"
+        (click)="onlyOdd = !onlyOdd">Only show odd numbers</button>
+      <br><br>
+      <ul class="list-group">
+        <div *ngIf="onlyOdd">
+          <li
+          class="list-group-item"
+          [ngClass]="{odd : odd % 2 !== 0}"
+          [ngStyle]="{backgroundColor : odd % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let odd of oddNumbers">
+          {{ odd }}
+        </li>
+        </div>     
+        <!-- <div *ngIf="!onlyOdd">
+            <li
+          class="list-group-item"
+          [ngClass]="{odd : even % 2 !== 0}"
+          [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let even of evenNumbers">
+          {{ even }}
+        </li>
+        </div>   
+        <ng-template [ngIf] = "!onlyOdd">
+          <div>
+              <li
+              class="list-group-item"
+              [ngClass]="{odd : even % 2 !== 0}"
+              [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+              *ngFor="let even of evenNumbers">
+              {{ even }}
+            </li>
+          </div>
+        </ng-template>-->
+        <div *appUnless="onlyOdd">
+            <li
+          class="list-group-item"
+          [ngClass]="{odd : even % 2 !== 0}"
+          [ngStyle]="{backgroundColor : even % 2 !== 0 ? 'yellow' : 'transparent' }"
+          *ngFor="let even of evenNumbers">
+          {{ even }}
+          </li>
+        </div>  
+      </ul>
+      <p appBasicHighlight>Style me with basic directive!</p>
+      <p [appBetterHighlight] = "'red'" [defaultColor] = "'yellow'">Style me with better directive!</p>
+      <!-- <p appBetterHighlight [defaultColor] = "'yellow'" [highlightColor] = "'red'">Style me with better directive!</p> -->
+      <div [ngSwitch] = "value">
+        <p *ngSwitchCase = "5">value is 5</p>
+        <p *ngSwitchCase = "10">value is 10</p>
+        <p *ngSwitchCase = "100">value is 15</p>
+        <p *ngSwitchDefault>value is Default</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+9. Using Services _ Dependency Injection(services-start in git)
+--------------------------------------------------------------------------------
+9.1 : Module Introduction
+--------------------------------------------------------------------------------
+
+
+
+9.2 : Why would you Need Services
+--------------------------------------------------------------------------------
+F:\Workspace\TechM\Angular6>ng new services-start
+* We have 3 componenet.
+	1.app componenet
+	2.account componenet
+	3.new-account componenet
+
+9.3 : Creating a Logging Service
+--------------------------------------------------------------------------------
+* Create a file login.service.ts.
+* Service is just a type script class and don't need to @Component.
+
+login.service.ts
+--------------------------------------------------------------------------------
+export class LoginService {
+    logStatusChange(status : string) {
+        console.log('A server status changed, new status: ' + status);
+    }
+}
+
+new-account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Output } from '@angular/core';
+import { LoginService } from '../login.service';
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css']
+})
+export class NewAccountComponent {
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit({
+      name: accountName,
+      status: accountStatus
+    });
+
+    const service = new LoginService();
+    service.logStatusChange(accountStatus);
+    //console.log('A server status changed, new status: ' + accountStatus);
+  }
+}
+
+* We should not use services like this means creating new instances.This is totally wrong.
+
+9.4 : Injecting the Logging Service into Components
+--------------------------------------------------------------------------------
+* By defining constructor we inform angular we simply need instance of LoginService.
+* If we have created new service then we have to define in providers for informing to angular.
+
+new-account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Output } from '@angular/core';
+import { LoginService } from '../login.service'
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  providers: [LoginService]
+})
+export class NewAccountComponent {
+  @Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  constructor(private loginService : LoginService) {}
+  
+  onCreateAccount(accountName: string, accountStatus: string) {
+    this.accountAdded.emit({
+      name: accountName,
+      status: accountStatus
+    });
+
+  this.loginService.logStatusChange(accountStatus);
+  }
+}
+
+account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { LoginService } from '../login.service'
+
+@Component({
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css'],
+  providers: [LoginService]
+})
+export class AccountComponent {
+  @Input() account: {name: string, status: string};
+  @Input() id: number;
+  @Output() statusChanged = new EventEmitter<{id: number, newStatus: string}>();
+
+  constructor(private loginService : LoginService) {}
+
+  onSetTo(status: string) {
+    this.statusChanged.emit({id: this.id, newStatus: status});
+    this.loginService.logStatusChange(status);
+    //console.log('A server status changed, new status: ' + status);
+  }
+}
+
+9.5 : Creating a Data Service
+--------------------------------------------------------------------------------
+* Create a file accounts.service.ts.
+
+accounts.service.ts
+--------------------------------------------------------------------------------
+export class AccountService {
+    accounts = [
+        {
+          name: 'Master Account',
+          status: 'active'
+        },
+        {
+          name: 'Testaccount',
+          status: 'inactive'
+        },
+        {
+          name: 'Hidden Account',
+          status: 'unknown'
+        }
+      ];
+    
+    addAccount(name : string, status : string) {
+        this.accounts.push({name:name , status:status});
+    }
+
+    updateStatus(id : number, status: string) {
+        this.accounts[id].status = status;
+    }
+}
+new-account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Output } from '@angular/core';
+import { LoginService } from '../login.service'
+import { AccountService } from '../accounts.service'
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+  providers: [LoginService,AccountService]
+})
+export class NewAccountComponent {
+  //@Output() accountAdded = new EventEmitter<{name: string, status: string}>();
+
+  constructor(private loginService : LoginService,
+              private accountService : AccountService) {}
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+  //   this.accountAdded.emit({
+  //     name: accountName,
+  //     status: accountStatus
+  // });
+  this.accountService.addAccount(accountName,accountStatus); 
+  this.loginService.logStatusChange(accountStatus);
+  }
+}
+
+account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { LoginService } from '../login.service';
+import { AccountService } from '../accounts.service';
+
+@Component({
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css'],
+  providers: [LoginService,AccountService]
+})
+export class AccountComponent {
+  @Input() account: {name: string, status: string};
+  @Input() id: number;
+  //@Output() statusChanged = new EventEmitter<{id: number, newStatus: string}>();
+
+  constructor(private loginService : LoginService,private accountService : AccountService) {}
+
+  onSetTo(status: string) {
+    //this.statusChanged.emit({id: this.id, newStatus: status});
+    this.accountService.updateStatus(this.id,status); 
+    this.loginService.logStatusChange(status);
+    //console.log('A server status changed, new status: ' + status);
+  }
+}
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import {AccountService} from './accounts.service';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  providers: [AccountService]
+})
+export class AppComponent implements OnInit{
+ accounts : {name : string, status : string}[] = [];
+
+ constructor(private accountService : AccountService) {}
+
+ ngOnInit() {
+   this.accounts = this.accountService.accounts;
+ }
+}
+
+app.component.html (forget to commit)
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      <app-new-account></app-new-account>
+      <hr>
+      <app-account
+        *ngFor="let acc of accounts; let i = index"
+        [account]="acc"
+        [id]="i"></app-account>
+    </div>
+  </div>
+</div>
+
+* Their is something problem,we will look into next session.
+
+
+9.6 : Understanding the Hierarchical Injector
+--------------------------------------------------------------------------------
+
+9.7 : How many Instances of Service Should It Be
+--------------------------------------------------------------------------------
+* app.component is parent,account.component & new-account.component are children of it.
+* We have instance of AccountService is each componenet.
+* Remove AccountService from providers from account.component & new-account.component.
+
+
+9.8 : Injecting Services into Services
+--------------------------------------------------------------------------------
+@Injectable() - it indicates that it is injectable and it will add where we want to inject.
+
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+//import { HttpModule } from '@angular/http';
+
+import { AppComponent } from './app.component';
+import { AccountComponent } from './account/account.component';
+import { NewAccountComponent } from './new-account/new-account.component';
+import { AccountService } from './accounts.service';
+import { LoginService } from './login.service';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    AccountComponent,
+    NewAccountComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    //HttpModule
+  ],
+  providers: [AccountService,LoginService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { LoginService } from '../login.service';
+import { AccountService } from '../accounts.service';
+
+@Component({
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css'],
+ // providers: [LoginService]						// removed LoginService
+})
+export class AccountComponent {
+  @Input() account: {name: string, status: string};
+  @Input() id: number;
+
+  constructor(private loginService : LoginService,private accountService : AccountService) {}
+
+  onSetTo(status: string) {
+    this.accountService.updateStatus(this.id,status); 
+    //this.loginService.logStatusChange(status);
+  }
+}
+
+new-account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Output } from '@angular/core';
+import { LoginService } from '../login.service'
+import { AccountService } from '../accounts.service'
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+ // providers: [LoginService] 							// removed LoginService
+})
+export class NewAccountComponent {
+
+  constructor(private loginService : LoginService,
+              private accountService : AccountService) {}
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+
+  this.accountService.addAccount(accountName,accountStatus); 
+  //this.loginService.logStatusChange(accountStatus);
+  }
+}
+
+accounts.service.ts
+--------------------------------------------------------------------------------
+import { EventEmitter, Injectable } from '@angular/core';
+
+import { LoginService } from './login.service';
+
+@Injectable()
+export class AccountService {
+  accounts = [
+    {
+      name: 'Master Account',
+      status: 'active'
+    },
+    {
+      name: 'Testaccount',
+      status: 'inactive'
+    },
+    {
+      name: 'Hidden Account',
+      status: 'unknown'
+    }
+  ];
+  statusUpdated = new EventEmitter<string>();
+
+  constructor(private loggingService: LoginService) {}
+
+  addAccount(name: string, status: string) {
+    this.accounts.push({name: name, status: status});
+    this.loggingService.logStatusChange(status);
+  }
+
+  updateStatus(id: number, status: string) {
+    this.accounts[id].status = status;
+    this.loggingService.logStatusChange(status);
+  }
+}
+
+
+9.9 : Using Services for Cross-Component Communication
+--------------------------------------------------------------------------------
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      <app-new-account></app-new-account>
+      <hr>
+      <app-account
+        *ngFor="let acc of accounts; let i = index"
+        [account]="acc"
+        [id]="i"></app-account>
+    </div>
+  </div>
+</div>
+
+
+account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { LoginService } from '../login.service';
+import { AccountService } from '../accounts.service';
+
+@Component({
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css'],
+ // providers: [LoginService]						
+})
+export class AccountComponent {
+  @Input() account: {name: string, status: string};
+  @Input() id: number;
+
+  constructor(private loginService : LoginService,private accountService : AccountService) {}
+
+  onSetTo(status: string) {
+    this.accountService.updateStatus(this.id,status); 
+    //this.loginService.logStatusChange(status);
+    this.accountService.statusUpdated.emit(status);
+  }
+}
+
+accounts.service.ts
+--------------------------------------------------------------------------------
+import { EventEmitter, Injectable } from '@angular/core';
+
+import { LoginService } from './login.service';
+
+@Injectable()
+export class AccountService {
+  accounts = [
+    {
+      name: 'Master Account',
+      status: 'active'
+    },
+    {
+      name: 'Testaccount',
+      status: 'inactive'
+    },
+    {
+      name: 'Hidden Account',
+      status: 'unknown'
+    }
+  ];
+  statusUpdated = new EventEmitter<string>(); // need to add in 9.9 : Using Services for Cross-Component Communication
+
+  constructor(private loggingService: LoginService) {}
+
+  addAccount(name: string, status: string) {
+    this.accounts.push({name: name, status: status});
+    this.loggingService.logStatusChange(status);
+  }
+
+  updateStatus(id: number, status: string) {
+    this.accounts[id].status = status;
+    this.loggingService.logStatusChange(status);
+  }
+}
+
+
+new-account.component.ts
+--------------------------------------------------------------------------------
+import { Component, EventEmitter, Output } from '@angular/core';
+import { LoginService } from '../login.service'
+import { AccountService } from '../accounts.service'
+
+@Component({
+  selector: 'app-new-account',
+  templateUrl: './new-account.component.html',
+  styleUrls: ['./new-account.component.css'],
+ // providers: [LoginService] 							
+})
+export class NewAccountComponent {
+
+  constructor(private loginService : LoginService,
+              private accountService : AccountService) {
+     this.accountService.statusUpdated.subscribe(
+       (status : string) => alert('New Status : ' + status)
+     )           
+    }
+
+  onCreateAccount(accountName: string, accountStatus: string) {
+
+  this.accountService.addAccount(accountName,accountStatus); 
+  //this.loginService.logStatusChange(accountStatus);
+  }
+}
+
+
+11. Changing Pages with Routing (routing-start in git) :  problem in code
+--------------------------------------------------------------------------------
+11.1 : Module Introduction
+--------------------------------------------------------------------------------
+
+11.2 : Why do we need a Router
+--------------------------------------------------------------------------------
+* We can't switch in multilpe tabs in UI for that we require routing.
+
+
+11.4 : Setting up and Loading Routes
+--------------------------------------------------------------------------------
+* In app.component.html we are loading all componenet.
+* We have to setup all route in const appRoutes,it should hold an array because it have multiple array.
+* Route should contain 1 path(means which file we want to execute) and 1 componenet which will be loaded from that path.
+* We should also create empty path.
+* By creating route is no use because angular doesn't know where to move so we have to register RouterModule into imports.
+* But upto here route is not register we have to use some method forRoot and it will accept appRoutes instances.
+* Now we have to display route here and we will change in app.component.html and place router-outlet.
+* Run the application,it will load home page.
+
+	http://localhost:4200/# - home page
+	http://localhost:4200/users - user page 
+	http://localhost:4200/servers - servers page
+
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+//import { HttpModule } from '@angular/http';
+import { Routes, RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { UsersComponent } from './users/users.component';
+import { ServersComponent } from './servers/servers.component';
+import { UserComponent } from './users/user/user.component';
+import { EditServerComponent } from './servers/edit-server/edit-server.component';
+import { ServerComponent } from './servers/server/server.component';
+import { ServersService } from './servers/servers.service';
+
+const appRoutes : Routes = [
+{ path : '',component : HomeComponent},
+{ path : 'users',component : UsersComponent},
+{ path : 'servers',component : ServersComponent},
+];
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    UsersComponent,
+    ServersComponent,
+    UserComponent,
+    EditServerComponent,
+    ServerComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+   // HttpModule
+   RouterModule.forRoot(appRoutes)
+  ],
+  providers: [ServersService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Home</a></li>
+        <li role="presentation"><a href="#">Servers</a></li>
+        <li role="presentation"><a href="#">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet> </router-outlet>
+    </div>
+  </div>
+</div>
+
+
+11.5 : Navigating with Router Links
+--------------------------------------------------------------------------------
+* Up to here we are able to route using url so it should require to navigate from browser.Click on servers snd users link & reloading it working this is issue because it is reloading the app.
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="/">Home</a></li>
+        <li role="presentation"><a href="/servers">Servers</a></li>
+        <li role="presentation"><a href="/users">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet> </router-outlet>
+    </div>
+  </div>
+</div>
+
+http://localhost:4200/servers
+http://localhost:4200/users
+
+* It means it restart the app in every navigation.means may be state can loss.
+* Angular provide directive for navigate that is routerLink.
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a routerLink = "/">Home</a></li>
+        <li role="presentation"><a routerLink = "/servers">Servers</a></li>
+        <li role="presentation"><a [routerLink] = "['/users']">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet> </router-outlet>
+    </div>
+  </div>
+</div>
+
+* Now it will not reload the page.
+* routerLink will laad form componenet register in app.module.ts
+
+
+11.6 : Understanding Navigation Paths
+--------------------------------------------------------------------------------
+* If we will remove / from here
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a routerLink = "/">Home</a></li>
+        <li role="presentation"><a routerLink = "servers">Servers</a></li>
+        <li role="presentation"><a [routerLink] = "['users']">Users</a></li> ---> property binding
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet> </router-outlet>
+    </div>
+  </div>
+</div>
+
+servers.component.html
+--------------------------------------------------------------------------------
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a
+        href="#"
+        class="list-group-item"
+        *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!-- <a routerLink = "servers">Reload Page</a> --> relative path --> http://localhost:4200/servers/servers ---> show error
+	<a routerLink = "/servers">Reload Page</a> ------> absolute path --> http://localhost:4200/servers ---> no error
+	<!-- <a routerLink = "./servers">Reload Page</a> --> relative path
+	<!-- <a routerLink = "../servers">Reload Page</a> --> navigate around folder directory,go up 1 level -->http://localhost:4200/servers
+    <app-edit-server></app-edit-server>
+    <hr>
+    <app-server></app-server>
+  </div>
+</div>
+
+* When you click on Reload Page it will show error i.e.Cannot match any routes. URL Segment: 'servers/servers'.
+
+* Relative path - append the link and the end the your current link
+* Absolute path - loaded from root componenet and it is running on http://localhost:4200,it always add on root level.
+
+
+11.7 : Styling Active Router Links
+--------------------------------------------------------------------------------
+* If we will select tab we will not get to know which tab is active.it is just a css thing  class="active"
+* It will be good when we can dynamically addd this class.routerLinkActive is directive provided by angular to do that.
+
+app.component.html
+--------------------------------------------------------------------------------
+ <li role="presentation"><a routerLink = "/"  routerLinkActive="active">Home</a></li> - it will also work
+ <li role="presentation" routerLinkActive="active"><a routerLink = "/"  >Home</a></li> - it will also work
+ 
+  <ul class="nav nav-tabs">
+        <li role="presentation" routerLinkActive="active"><a routerLink = "/"  >Home</a></li>
+        <li role="presentation" routerLinkActive="active"><a routerLink = "/servers">Servers</a></li>
+        <li role="presentation" routerLinkActive="active"><a [routerLink] = "['users']">Users</a></li>
+   </ul>
+
+* but some how home is always marked as active,that means it doesn't work correct.
+[routerLinkActiveOptions]="{exact : true}" - property dinding and it will take java script object.
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="nav nav-tabs">
+        <li role="presentation" routerLinkActive="active" [routerLinkActiveOptions]="{exact : true}"><a routerLink = "/"  >Home</a></li>
+        <li role="presentation" routerLinkActive="active"><a routerLink = "/servers">Servers</a></li>
+        <li role="presentation" routerLinkActive="active"><a [routerLink] = "['users']">Users</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet> </router-outlet>
+    </div>
+  </div>
+</div>
+
+
+11.8 : Navigating Programmatically
+--------------------------------------------------------------------------------
+* What happen you page don't have link to load like a button when click on button it will trigger the type script code through navigation.
+ 
+ home.component.html
+--------------------------------------------------------------------------------
+<h4>Welcome to Server Manager 4.0</h4>
+<p>Manage your Servers and Users.</p>
+<button (click)="onLoadServers()"> Load Servers </button>
+
+home.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import {Router} from "@angular/router";
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor(private router : Router) { }
+
+  ngOnInit() {
+  }
+
+  onLoadServers() {
+    this.router.navigate(['/servers']);
+  }
+}
+
+11.9 : Using Relative Paths in Programmatic Navigation
+--------------------------------------------------------------------------------
+* this.router.navigate(['servers']); - changed into relative path but still no issue but previousaly we get the error.
+
+navigate -  nagivate method does not know which router in currently on
+
+servers.component.html
+--------------------------------------------------------------------------------
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a
+        href="#"
+        class="list-group-item"
+        *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <button (click)="onReload()" class="btn btn-primary">Reload Page</button>
+    <app-edit-server></app-edit-server>
+    <hr>
+    <app-server></app-server>
+  </div>
+</div>
+
+servers.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { ServersService } from './servers.service';
+import {Router, ActivatedRoute} from "@angular/router";
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+   servers: {id: number, name: string, status: string}[] = [];
+
+  constructor(private serversService: ServersService,
+              private router : Router,
+              private route : ActivatedRoute) { }
+
+  ngOnInit() {
+    this.servers = this.serversService.getServers();
+  }
+
+  onReload() {
+    // this.router.navigate(['/servers']); 
+    this.router.navigate(['servers'], {relativeTo: this.route}); 
+  }
+}
+
+* now page will break.
+
+
+11.10 : Passing Parameters to Routes
+--------------------------------------------------------------------------------
+* We also want to be loaded single user.For that we have to load user dynamacally.
+* We have already hard coded id of the user in users.component.ts file.
+
+
+app.module.ts
+--------------------------------------------------------------------------------
+const appRoutes : Routes = [
+{ path : '',component : HomeComponent},
+{ path : 'users',component : UsersComponent},
+{ path : 'users/1',component : UserComponent},
+{ path : 'users/2',component : UserComponent},
+{ path : 'servers',component : ServersComponent},
+];
+
+* it does not look optimal because it is not dynamic and how we will get to know which route was loaded.
+* Instead of that we can add parameter in path.
+{ path : 'users/:id',component : UserComponent}
+
+* : - It tells it is dynamic part of the path.
+* With this  users/ anyid or anything can be loaded.
+
+app.module.ts
+--------------------------------------------------------------------------------
+const appRoutes : Routes = [
+{ path : '',component : HomeComponent},
+{ path : 'users',component : UsersComponent},
+{ path : 'users/:id',component : UserComponent},
+{ path : 'servers',component : ServersComponent},
+];
+
+http://localhost:4200/users/something - for both single user componenet was loaded.
+http://localhost:4200/users/1
+
+11.11 : Fetching Route Parameters
+--------------------------------------------------------------------------------
+constructor(private route : ActivatedRoute) - currently loaded route javascript object contains a lot of metadata
+
+user.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit {
+  user: {id: number, name: string};
+
+  constructor(private route : ActivatedRoute) { }
+
+  ngOnInit() {
+    this.user = {
+      id : this.route.snapshot.params['id'], // loaded from { path : 'users/:id',component : UserComponent},
+      name : this.route.snapshot.params['name'] // snapshot is used for loading 1 data
+    };
+  }
+}
+
+user.component.html
+--------------------------------------------------------------------------------
+<p>User with ID {{ user.id }} loaded.</p> // string interpolation
+<p>User name is {{ user.name }}</p>
+
+app.module.ts
+--------------------------------------------------------------------------------
+const appRoutes : Routes = [
+{ path : '',component : HomeComponent},
+{ path : 'users',component : UsersComponent},
+{ path : 'users/:id/:name',component : UserComponent},
+{ path : 'servers',component : ServersComponent},
+];
+
+
+http://localhost:4200/users/1/Max
+http://localhost:4200/users/3/Max
+
+11.12 : Fetching Route Parameters Reactively
+--------------------------------------------------------------------------------
+* This above approach will not work in every scenerio.
+
+user.component.html
+--------------------------------------------------------------------------------
+<p>User with ID {{ user.id }} loaded.</p>
+<p>User name is {{ user.name }}</p>
+<hr>
+<a [routerLink]="['/users',10,'Anna']">Load Anna (10)</a>  ---> this will now construct a route /users/10/Anna
+
+
+* Now enter http://localhost:4200/users/10/Anna on browser and click on Load Anna (10).
+* Here url is updated not text.
+* This is not a bug but it is behaviour because we are loading data by snapshot object on the route.
+
+user.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit {
+  user: {id: number, name: string};
+
+  constructor(private route : ActivatedRoute) { }
+
+  ngOnInit() {
+    this.user = {
+      id : this.route.snapshot.params['id'], 
+      name : this.route.snapshot.params['name']
+    };
+    this.route.params.subscribe(  
+      (params : Params) => {
+        this.user.id = params['id'];
+        this.user.name = params['name'];
+      }
+    );
+  }
+}
+
+*This.route.params - params is a Observables,Observables are the features added by the 3rd pary package but used by angular which 
+  allow you to work on asynchronous task.
+  
+*This is asynchronous task because when we click on link we don't know which parameter get loaded.
+ 
+*subscribe take 3 argument
+
+  this.route.params.subscribe(
+      (params : Params) => {
+        this.user.id = params['id'];
+        this.user.name = params['name'];
+      }
+    );
+  this will update the user object whenever parameter change.
+	
+
+
+11.13 : An Important Note about Route Observables
+--------------------------------------------------------------------------------
+* So When subscription and leave this componenet then componenet destroyed but subscription always remain in the memory because it is not 
+  closely tight to your componenet means componenet destroyed but subscription won't.
+  
+* Install this package.
+
+  F:\Workspace\TechM\Angular6\routing-start>npm install --save rxjs-compat
+
+* rxjs - it is package which offer observable functionality.
+
+user.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit,OnDestroy {
+  user: {id: number, name: string};
+  paramsSubsciption : Subscription;
+
+  constructor(private route : ActivatedRoute) { }
+
+  ngOnInit() {
+    this.user = {
+      id : this.route.snapshot.params['id'], 
+      name : this.route.snapshot.params['name']
+    };
+    this.paramsSubsciption = this.route.params.subscribe(
+      (params : Params) => {
+        this.user.id = params['id'];
+        this.user.name = params['name'];
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.paramsSubsciption.unsubscribe();
+  }
+}
+
+11.14 : Passing Query Parameters and Fragments
+--------------------------------------------------------------------------------
+* Now you can add query parameter in url like http://localhost:4200/users/10/Anna?mode=editing&
+											  http://localhost:4200/users/10/Anna?mode=editing#loading
+											  
+* Click on  servers --> ProductionServer --> and you will see on browser 
+  Click on  servers --> TestServer --> and you will see on browser 
+
+http://localhost:4200/servers/5/edit	
+http://localhost:4200/servers/5/edit		
+
+* In queryParams we have to define key value pair format.
+
+* Click on  servers --> ProductionServer --> and you will see on browser  
+
+  http://localhost:4200/servers/5/edit?allowEdit=1											  
+
+* Click on  servers --> ProductionServer --> and you will see on browser  
+
+  http://localhost:4200/servers/5/edit?allowEdit=1#loading
+  
+     [fragment]="'loading'"
+   
+* Click on  Home --> click on Load Server1 button ---> see on browser http://localhost:4200/servers/1/edit?allowEdit=1#loading
+
+
+
+app.module.ts
+--------------------------------------------------------------------------------
+const appRoutes : Routes = [
+{ path : '',component : HomeComponent},
+{ path : 'users',component : UsersComponent},
+{ path : 'users/:id/:name',component : UserComponent},
+{ path : 'servers',component : ServersComponent},
+{ path : 'servers/:id/edit',component : EditServerComponent},
+]
+
+servers.component.html
+--------------------------------------------------------------------------------
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a
+        [routerLink]="['/servers',5,'edit']"
+        [queryParams]="{allowEdit : '1'}"
+        fragment="loading" // [fragment]="'loading'" --> both will work
+        href="#"
+        class="list-group-item"
+        *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <button (click)="onReload()" class="btn btn-primary">Reload Page</button>
+    <app-edit-server></app-edit-server>
+    <hr>
+    <app-server></app-server>
+  </div>
+</div>
+
+home.component.html
+--------------------------------------------------------------------------------
+<h4>Welcome to Server Manager 4.0</h4>
+<p>Manage your Servers and Users.</p>
+<button (click)="onLoadServer(1)" class="btn btn-primary"> Load Server 1 </button>
+
+home.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import {Router} from "@angular/router";
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor(private router : Router) { }
+
+  ngOnInit() {
+  }
+
+  onLoadServer(id : number) {
+    this.router.navigate(['/servers',id,'edit'],{ queryParams : { allowEdit :'1'},fragment : 'loading'});
+  }
+}
+
+11.15 : Retrieving Query Parameters and Fragments
+--------------------------------------------------------------------------------
+* We need ActivatedRoute for accesing Query Parameters and Fragments.
+* Their are 2 approch for accesing Query Parameters .
+
+1st Approach :
+------------------
+  console.log(this.route.snapshot.queryParams); 
+  console.log(this.route.snapshot.fragment);
+
+* Above will run or updated when componenet is created,if their is chance of change of query params to current page it will not work.this is 
+  not reactive when componenet has been loaded.
+  
+* Go to browser press F12 and on console you can see output.
+
+  {allowEdit: "1"}
+	allowEdit: "1"
+	
+2nd Approach :
+------------------
+	this.route.queryParams.subscribe();
+    this.route.fragment.subscribe();
+	
+* It will react when query param loaded.Nice approach
+
+edit-server.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+
+import { ServersService } from '../servers.service';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-edit-server',
+  templateUrl: './edit-server.component.html',
+  styleUrls: ['./edit-server.component.css']
+})
+export class EditServerComponent implements OnInit {
+  server: {id: number, name: string, status: string};
+  serverName = '';
+  serverStatus = '';
+
+  constructor(private serversService: ServersService,private route : ActivatedRoute) { }
+
+  ngOnInit() {
+    console.log(this.route.snapshot.queryParams);
+    console.log(this.route.snapshot.fragment);
+    this.route.queryParams.subscribe();
+    this.route.fragment.subscribe();
+    this.server = this.serversService.getServer(1);
+    this.serverName = this.server.name;
+    this.serverStatus = this.server.status;
+  }
+
+  onUpdateServer() {
+    this.serversService.updateServer(this.server.id, {name: this.serverName, status: this.serverStatus});
+  }
+}
+
+11.16 : Practicing and some Common Gotchas
+--------------------------------------------------------------------------------
+* id is coming from url,so when it is coming from url it should be string but it is required in number so add +
+  
+  const id = +this.route.snapshot.params['id'];
+
+users.component.html
+--------------------------------------------------------------------------------
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a
+      [routerLink]="['/users',user.id,user.name]" // take user form for loop
+        href="#"
+        class="list-group-item"
+        *ngFor="let user of users">
+        {{ user.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <app-user></app-user>
+  </div>
+</div>
+
+
+servers.component.html
+--------------------------------------------------------------------------------
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a
+        [routerLink]="['/servers',server.id]" // take server form for loop
+        [queryParams]="{allowEdit : '1'}"
+        fragment="loading"
+        href="#"
+        class="list-group-item"
+        *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <button (click)="onReload()" class="btn btn-primary">Reload Page</button>
+    <app-edit-server></app-edit-server>
+    <hr>
+    <!-- <app-server></app-server> --> // we are loading single server details so commented it
+  </div>
+</div>
+
+server.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+
+import { ServersService } from '../servers.service';
+import { ActivatedRoute, Params } from '@angular/router';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css']
+})
+export class ServerComponent implements OnInit {
+  server: {id: number, name: string, status: string};
+
+  constructor(private serversService: ServersService,private route : ActivatedRoute) { }
+
+  ngOnInit() {
+    const id = +this.route.snapshot.params['id'];
+    this.server = this.serversService.getServer(id);
+    this.route.params.subscribe(
+      (params : Params) => {
+        this.server = this.serversService.getServer(+params['id']);
+      }
+    );
+  }
+
+}
+
+app.module.ts
+--------------------------------------------------------------------------------
+const appRoutes : Routes = [
+{ path : '',component : HomeComponent},
+{ path : 'users',component : UsersComponent},
+{ path : 'users/:id/:name',component : UserComponent},
+{ path : 'servers',component : ServersComponent},
+{ path : 'servers/:id/edit',component : EditServerComponent},
+{ path : 'servers/:id',component : ServerComponent} //  new route
+];
+
+
+* Now click on servers,users on browser.
+
+11.17 : Setting up Child (Nested) Routes
+--------------------------------------------------------------------------------
+* Issue upto is here when we click on production server it will load new page,now we will load into same page.
+
+* All the child route of servers are loaded from <router-outlet>
+
+app.module.ts
+--------------------------------------------------------------------------------
+const appRoutes : Routes = [
+{ path : '',component : HomeComponent},
+{ path : 'users',component : UsersComponent, children:[
+  { path : ':id/:name',component : UserComponent}
+]},
+{ path : 'servers',component : ServersComponent, children:[
+  { path : ':id/edit',component : EditServerComponent},
+  { path : ':id',component : ServerComponent}
+] },
+];
+
+servers.component.html
+--------------------------------------------------------------------------------
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a
+        [routerLink]="['/servers',server.id]"
+        [queryParams]="{allowEdit : '1'}"
+        fragment="loading"
+        href="#"
+        class="list-group-item"
+        *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+      <router-outlet> </router-outlet>
+    <!-- <button (click)="onReload()" class="btn btn-primary">Reload Page</button>
+    <app-edit-server></app-edit-server>
+    <hr>
+    <app-server></app-server> -->
+  </div>
+</div>
+
+users.component.html
+--------------------------------------------------------------------------------
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <a
+      [routerLink]="['/users',user.id,user.name]"
+        href="#"
+        class="list-group-item"
+        *ngFor="let user of users">
+        {{ user.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!-- <app-user></app-user> -->
+    <router-outlet> </router-outlet>
+  </div>
+</div>
+
+13. Understanding Observables
+--------------------------------------------------------------------------------
+* Observables can be part of datasource,in angular Observables are just object which are imported from 3rd party package ot rxjs.
+
+* So we have Observables and Observer,in between we have timeline and this time line can have multiple events
+
+
+13.1 : Module Introduction
+--------------------------------------------------------------------------------
+
+13.2 : Angular 6 _ RxJS 6
+--------------------------------------------------------------------------------
+package.json  
+--------------------------------------------------------------------------------
+"dependencies": {
+    "@angular/animations": "~9.0.5",
+    "@angular/common": "~9.0.5",
+    "@angular/compiler": "~9.0.5",
+    "@angular/core": "~9.0.5",
+    "@angular/forms": "~9.0.5",
+    "@angular/platform-browser": "~9.0.5",
+    "@angular/platform-browser-dynamic": "~9.0.5",
+    "@angular/router": "~9.0.5",
+    "bootstrap": "^4.5.2",
+    "rxjs": "~6.5.4",
+    "rxjs-compat": "^6.6.2",
+    "tslib": "^1.10.0",
+    "zone.js": "~0.10.2"
+  },
+  
+* Install this package.
+
+  F:\Workspace\TechM\Angular6\observables-start>npm install bootstrap
+  
+* To use it angular aware of it. so we to add in config file i.e. angular.json file. 
+		 "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css"
+            ]
+  F:\Workspace\TechM\Angular6\observables-start>npm install --save rxjs-compat
+
+
+
+13.3 : Analyzing a Built-in Angular Observable
+--------------------------------------------------------------------------------
+* subscribe() -  always takes 3 argument.
+* => - anonymous function
+
+13.4 : Building _ Using a First Simple Observable
+--------------------------------------------------------------------------------
+* Now build our own Observables.
+* Our new Observable is emit/sending some number in some interval.
+* Using interval we are tryig to create Observable.
+* Only Observable will not able to create observable we need to call method also.
+
+home.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { interval } from 'rxjs/observable/interval';
+import 'rxjs/Rx';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+    const myNumbers = Observable.interval(1000,); 
+    myNumbers.subscribe(
+      (number:number) => {
+        console.log(number);
+      }
+    );
+  }
+}
+
+13.5 : Building _ Using a Custom Observable from Scratch
+--------------------------------------------------------------------------------
+* create() takes function as a argument observer  
+
+* next() - just pushes the next data package
+
+* After calling  observer.complete(); no output is will show.
+
+
+home.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { interval } from 'rxjs/observable/interval';
+import 'rxjs/Rx';
+import { Observer } from 'rxjs/Observer';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+    // const myNumbers = Observable.interval(1000,);
+    // myNumbers.subscribe(
+    //   (number:number) => {
+    //     console.log(number);
+    //   }
+    // );
+    const myObservables = Observable.create((observer : Observer<string>) => {
+          setTimeout(() => {
+            observer.next('first package');
+        },2000);
+        setTimeout(() => {
+          observer.next('second package');
+      },4000);
+      setTimeout(() => {
+        //observer.error('this does not work..');    
+          observer.complete();    
+    },5000);
+    setTimeout(() => {
+      observer.next('third package');
+  },6000);
+      });
+      myObservables.subscribe(
+        (data : string) => {console.log(data); },
+        (error : string) => {console.log(error); },
+        () => {console.log('complated'); }
+      );
+  }
+}
+
+13.6 : Unsubscribe!
+--------------------------------------------------------------------------------
+* If we don't Unsubscribe the observer then it will create memory leak.
+
+home.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { interval } from 'rxjs/observable/interval';
+import 'rxjs/Rx';
+import { Observer } from 'rxjs/Observer';
+import { Subscription } from 'rxjs/Subscription';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit,OnDestroy {
+  numberObsSubscription: Subscription;
+  customObsSubscription: Subscription;
+
+  constructor() { }
+
+  ngOnInit() {
+    const myNumbers = Observable.interval(1000,);
+    this.numberObsSubscription = myNumbers.subscribe(
+      (number:number) => {
+        console.log(number);
+      }
+    );
+    const myObservables = Observable.create((observer : Observer<string>) => {
+          setTimeout(() => {
+            observer.next('first package');
+        },2000);
+        setTimeout(() => {
+          observer.next('second package');
+      },4000);
+      setTimeout(() => {
+        //observer.error('this does not work..');    
+          observer.complete();    
+    },5000);
+    setTimeout(() => {
+      observer.next('third package');
+  },6000);
+      });
+      this.customObsSubscription = myObservables.subscribe(
+        (data : string) => {console.log(data); },
+        (error : string) => {console.log(error); },
+        () => {console.log('complated'); }
+      );
+  }
+  ngOnDestroy() {
+    this.numberObsSubscription.unsubscribe();
+    this.customObsSubscription.unsubscribe();
+  }
+}
+
+13.7 : Where to learn more
+--------------------------------------------------------------------------------
+* http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html
+
+13.8 : Using Subjects to Pass AND Listen to Data
+--------------------------------------------------------------------------------
+* Subject is like as observable and allows you to conveniently push or emit a new data.
+
+* It is a good practise to use subject instead of EventEmitter.
+
+users.service.ts
+--------------------------------------------------------------------------------
+import { Subject } from 'rxjs/Subject';
+
+export class UsersService {
+    userActivated = new Subject();
+}
+
+user.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { UsersService } from '../users.service';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit {
+  id: number;
+
+  constructor(private route: ActivatedRoute,private usersService : UsersService) { }
+
+  ngOnInit() {
+    this.route.params
+      .subscribe(
+        (params: Params) => {
+          this.id = +params['id'];
+        }
+      );
+  }
+  onActivate() {
+    this.usersService.userActivated.next(this.id);
+  }
+}
+
+
+user.component.html
+--------------------------------------------------------------------------------
+<p>User with <strong>ID {{ id }}</strong> was loaded</p>
+<button  class="btn btn-primary" (click)="onActivate()">Activated!</button>
+
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { UserComponent } from './user/user.component';
+import { AppRoutingModule } from './app-routing.module';
+import { UsersService } from './users.service';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    UserComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [UsersService],    //user service added here
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <a routerLink="/">Home</a>
+      <a [routerLink]="['user', 1]">User 1 {{  user1Activated ? '(activated)' : ''}}</a>
+      <a [routerLink]="['user', 2]">User 2 {{  user2Activated ? '(activated)' : ''}}</a>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { UsersService } from './users.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit{
+  user1Activated = false;
+  user2Activated = false;
+
+  constructor(private usersService :  UsersService) {}
+
+  ngOnInit() {
+    this.usersService.userActivated.subscribe(
+      (id : number) => {
+        if(id === 1) {
+          this.user1Activated = true;
+        } else if(id === 2) {
+          this.user2Activated = true;
+        }
+      }
+    );
+  }
+}
+
+13.9 :  Understanding Observable Operators
+--------------------------------------------------------------------------------
+* map operator will map the data which you will use to any observable as per your choice.
+* unlock operator we have to use import 'rxjs/Rx';
+
+home.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { interval } from 'rxjs/observable/interval';
+import 'rxjs/Rx';
+import { Observer } from 'rxjs/Observer';
+import { Subscription } from 'rxjs/Subscription';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit,OnDestroy {
+  numberObsSubscription: Subscription;
+  customObsSubscription: Subscription;
+
+  constructor() { }
+
+  ngOnInit() {
+    const myNumbers = Observable.interval(1000)
+    .map(
+      ( data :number) => {
+        return data *2;
+      }
+      );
+    this.numberObsSubscription = myNumbers.subscribe(
+      (number:number) => {
+        console.log(number);
+      }
+    );
+    const myObservables = Observable.create((observer : Observer<string>) => {
+          setTimeout(() => {
+            observer.next('first package');
+        },2000);
+        setTimeout(() => {
+          observer.next('second package');
+      },4000);
+      setTimeout(() => {
+        //observer.error('this does not work..');    
+          observer.complete();    
+    },5000);
+    setTimeout(() => {
+      observer.next('third package');
+  },6000);
+      });
+      this.customObsSubscription = myObservables.subscribe(
+        (data : string) => {console.log(data); },
+        (error : string) => {console.log(error); },
+        () => {console.log('complated'); }
+      );
+  }
+  ngOnDestroy() {
+    this.numberObsSubscription.unsubscribe();
+    this.customObsSubscription.unsubscribe();
+  }
+}
+
+13.10 : RxJS 6 without rxjs-compat
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+15. Handling Forms in Angular Apps
+--------------------------------------------------------------------------------
+
+
+
+15.2 : Why do we Need Angular_s Help
+--------------------------------------------------------------------------------
+
+15.3 : Template-Driven (TD) vs Reactive Approach
+--------------------------------------------------------------------------------
+* Angular offer 2 approached for handling forms.
+
+1.template driven : Here simple setup your form in template in html code and angular will automatically refer to template in html code.
+2.Reactive : Here you only define the structure of the form in type script code and also setup html code and manully connect which sound more 
+			 complex.
+			 
+			 
+15.4 : An Example Form
+--------------------------------------------------------------------------------
+
+
+15.5 : TD Creating the Form and Registering the Controls
+--------------------------------------------------------------------------------
+* Make sure that your forms module should be imported from @angular/forms.
+
+* Angular automatically creates the form for you means java script representation of your form.
+
+* ngModel - it will tell angular it is control of my form.
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form>
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username">
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" ngModel name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+15.6 : TD Submitting and Using the Form
+--------------------------------------------------------------------------------
+* Now we will make out form submittable.
+
+* ngSubmit - it will fire when form is submitted.
+
+* press F12 and go to value.
+
+	value: Object
+		email: "test@gmail.com"
+		secret: "pet"
+		username: "test"
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username">
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" ngModel name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+  }
+  onSubmit(form : NgForm) {
+    console.log(form);
+  }
+}
+
+
+
+15.7 : TD Understanding Form State
+--------------------------------------------------------------------------------
+* dirty : true --> if we make any changes in the form it will be true otherwise it will be false.
+
+* valid : true ---> if input is valid
+
+15.8 : TD Accessing the Form with @ViewChild
+--------------------------------------------------------------------------------
+* Check onSubmit() add f as argument in this current vedio it was removed.
+
+app.component.html
+--------------------------------------------------------------------------------
+ <form (ngSubmit)="onSubmit()" #f="ngForm">
+ 
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  @ViewChild('f') signupForm : NgForm;
+
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+  }
+  // onSubmit(form : NgForm) {
+  //   console.log(form);
+  // }
+
+  onSubmit(form : NgForm) {
+    console.log(this.signupForm);
+  }
+}
+
+
+15.9 : TD Adding Validation to check User Input
+--------------------------------------------------------------------------------
+* required : act as a selector 
+
+* press F12 & remove @ from email address and ng-invalid will add here.
+
+* Check onSubmit() add f as argument removed in 15.8 vedio
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit()" #f="ngForm">
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required> // added required
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email> // added required & email
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" ngModel name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+15.11 : TD Using the Form State
+--------------------------------------------------------------------------------
+* Check onSubmit() add f as argument removed in 15.8 vedio
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email>
+          </div>
+          <p *ngIf="">Please enter a valid value!</p>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" ngModel name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+app.component.css
+--------------------------------------------------------------------------------
+.container {
+  margin-top: 30px;
+}
+input.ng-invalid.ng-touched {
+  border : 1px solid red;
+}
+
+
+
+15.12 : TD Outputting Validation Error Messages
+--------------------------------------------------------------------------------
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email #email="ngModel">
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+          <p *ngIf="">Please enter a valid value!</p>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" ngModel name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+15.13 : TD Set Default Values with ngModel Property Binding
+--------------------------------------------------------------------------------
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email #email="ngModel">
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+          <p *ngIf="">Please enter a valid value!</p>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" [ngModel]="defaultQuestion" name="secret"> // property binding here
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  @ViewChild('f') signupForm : NgForm;
+  //defaultQuestion = 'pet';
+  defaultQuestion = 'teacher';
+
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+  }
+  // onSubmit(form : NgForm) {
+  //   console.log(form);
+  // }
+
+  onSubmit(form : NgForm) {
+    console.log(this.signupForm);
+  }
+}
+
+15.14 : TD Using ngModel with Two-Way-Binding
+--------------------------------------------------------------------------------
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email #email="ngModel">
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+          <p *ngIf="">Please enter a valid value!</p>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" [ngModel]="defaultQuestion" name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea name="questionAnswer" rows="3" class = "form-control" [(ngModel)]="answer"></textarea>   // textarea added
+        </div>
+        <p>Your reply : {{ answer }}</p>			// added here
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  @ViewChild('f') signupForm : NgForm;
+  //defaultQuestion = 'pet';
+  defaultQuestion = 'teacher';
+  answer = ' ';
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+  }
+  // onSubmit(form : NgForm) {
+  //   console.log(form);
+  // }
+
+  onSubmit(form : NgForm) {
+    console.log(this.signupForm);
+  }
+}
+
+
+15.15 : TD Grouping Form Controls
+--------------------------------------------------------------------------------
+* Now we want to group username & email and secreat & questionAnswer.
+
+* After change press F12 and got value --> userData
+
+* #userData="ngModelGroup - this means creating userData refrence
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data" ngModelGroup="userData" #userData="ngModelGroup"> // creating userData refrence #userData
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email #email="ngModel">
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+          <p *ngIf="">Please enter a valid value!</p>
+        </div>
+        <p *ngIf="!userData.valid && userData.touched">User Data is invalid</p> // show error in form
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" [ngModel]="defaultQuestion" name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea name="questionAnswer" rows="3" class = "form-control" [(ngModel)]="answer"></textarea>         
+        </div>
+        <p>Your reply : {{ answer }}</p>
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+15.16 : TD Handling Radio Buttons
+--------------------------------------------------------------------------------
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data" ngModelGroup="userData" #userData="ngModelGroup">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email #email="ngModel">
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+          <p *ngIf="">Please enter a valid value!</p>
+        </div>
+        <p *ngIf="!userData.valid && userData.touched">User Data is invalid</p>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" [ngModel]="defaultQuestion" name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea name="questionAnswer" rows="3" class = "form-control" [(ngModel)]="answer"></textarea>         
+        </div>
+        <p>Your reply : {{ answer }}</p>
+        <div class="radio" *ngFor="let gender of genders"> // radio button added here genders
+          <label>
+            <input type="radio" name="gender" ngModel [value]="gender" required>{{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  @ViewChild('f') signupForm : NgForm;
+  //defaultQuestion = 'pet';
+  defaultQuestion = 'teacher';
+  answer = ' ';
+  genders = ['male','female'];
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+  }
+  // onSubmit(form : NgForm) {
+  //   console.log(form);
+  // }
+
+  onSubmit(form : NgForm) {
+    console.log(this.signupForm);
+  }
+}
+
+15.17 : TD Setting and Patching Form Values
+--------------------------------------------------------------------------------
+ * Problem with 1st approch is if text box has some value and we click on Suggest an Username it will get remove.
+ 
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data" ngModelGroup="userData" #userData="ngModelGroup">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button" (click)="suggestUserName()">Suggest an Username</button> // added method here
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email #email="ngModel">
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+          <p *ngIf="">Please enter a valid value!</p>
+        </div>
+        <p *ngIf="!userData.valid && userData.touched">User Data is invalid</p>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" [ngModel]="defaultQuestion" name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea name="questionAnswer" rows="3" class = "form-control" [(ngModel)]="answer"></textarea>         
+        </div>
+        <p>Your reply : {{ answer }}</p>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" name="gender" ngModel [value]="gender" required>{{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  @ViewChild('f') signupForm : NgForm;
+  //defaultQuestion = 'pet';
+  defaultQuestion = 'teacher';
+  answer = ' ';
+  genders = ['male','female'];
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+    // this.signupForm.setValue({ // approach 1 commented
+    //   userData: {
+    //     username: suggestedName,
+    //     email: ''
+    //   },
+    //   secret: 'pet',
+    //   questionAnswer: '',
+    //   gender: 'male'
+    // });
+    this.signupForm.form.patchValue({
+      userData: {
+        username: suggestedName // we ony give username 
+      }
+    });
+  }
+  // onSubmit(form : NgForm) {
+  //   console.log(form);
+  // }
+
+  onSubmit(form : NgForm) {
+    console.log(this.signupForm);
+  }
+}
+
+15.18 : TD Setting and Patching Form Values
+--------------------------------------------------------------------------------
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data" ngModelGroup="userData" #userData="ngModelGroup">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button" (click)="suggestUserName()">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control" ngModel name="email" required email #email="ngModel">
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+          <p *ngIf="">Please enter a valid value!</p>
+        </div>
+        <p *ngIf="!userData.valid && userData.touched">User Data is invalid</p>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control" [ngModel]="defaultQuestion" name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea name="questionAnswer" rows="3" class = "form-control" [(ngModel)]="answer"></textarea>         
+        </div>
+        <p>Your reply : {{ answer }}</p>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" name="gender" ngModel [value]="gender" required>{{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+  <hr>
+  <div class="row" *ngIf="submitted"> // added here
+    <div class="col-xs-12">
+      <h3>Your Data</h3>
+      <p>Username: {{ user.username }}</p>
+      <p>Mail: {{ user.email }}</p>
+      <p>Secret Question: Your first {{ user.secretQuestion }}</p>
+      <p>Answer: {{ user.answer }}</p>
+      <p>Gender: {{ user.gender }}</p>
+    </div>
+  </div>
+</div>
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  @ViewChild('f') signupForm : NgForm;
+  //defaultQuestion = 'pet';
+  defaultQuestion = 'teacher';
+  answer = ' ';
+  genders = ['male','female'];
+  user = {
+    username: '',
+    email: '',
+    secretQuestion: '',
+    answer: '',
+    gender: ''
+  };
+  submitted = false;
+  
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+    // this.signupForm.setValue({
+    //   userData: {
+    //     username: suggestedName,
+    //     email: ''
+    //   },
+    //   secret: 'pet',
+    //   questionAnswer: '',
+    //   gender: 'male'
+    // });
+    this.signupForm.form.patchValue({
+      userData: {
+        username: suggestedName
+      }
+    });
+  }
+  // onSubmit(form : NgForm) {
+  //   console.log(form);
+  // }
+
+  onSubmit(form : NgForm) {
+    this.submitted = true;
+    this.user.username = this.signupForm.value.userData.username;
+    this.user.email = this.signupForm.value.userData.email;
+    this.user.secretQuestion = this.signupForm.value.secret;
+    this.user.answer = this.signupForm.value.questionAnswer;
+    this.user.gender = this.signupForm.value.gender;
+  }
+}
+
+15.19 : TD Resetting Forms
+--------------------------------------------------------------------------------
+
+app.component.ts
+--------------------------------------------------------------------------------
+onSubmit(form : NgForm) {
+    this.submitted = true;
+    this.user.username = this.signupForm.value.userData.username;
+    this.user.email = this.signupForm.value.userData.email;
+    this.user.secretQuestion = this.signupForm.value.secret;
+    this.user.answer = this.signupForm.value.questionAnswer;
+    this.user.gender = this.signupForm.value.gender;
+
+    this.signupForm.reset(); // this method is used for resetting
+  }
+
+  
+
+15.21 : Introduction to the Reactive Approach
+--------------------------------------------------------------------------------
+
+15.22 : Reactive Setup
+--------------------------------------------------------------------------------
+* In reactive approach form is created programatically in type script code.
+
+* programatically doesn't mean that form scratch means angular offer such a packge that will create form for us.
+
+* In TD approach we import ngForm which internally wrapping FormGroup.We don't need FormsModule becoz it is needed in TD approach.
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  genders = ['male', 'female'];
+  signupForm : FormGroup;
+}
+
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+//import { HttpModule } from '@angular/http';
+
+import { AppComponent } from './app.component';
+import { ReactiveFormsModule } from '@angular/forms';   // added here
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule									// added here
+   // HttpModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+15.23 : Reactive Creating a Form in Code
+--------------------------------------------------------------------------------
+* Control is just key value form which is just pass to FormGroup.
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm : FormGroup;
+
+  ngOnInit() {
+    this.signupForm = new FormGroup({
+      'username' : new FormControl(null),
+      'email' : new FormControl(null),
+      'gender': new FormControl('male')
+    });
+  }
+}
+
+
+15.24 : Reactive Syncing HTML and Form
+--------------------------------------------------------------------------------
+* We are passing FormGroup via property binding.  <form [formGroup]="signupForm">
+
+* formControlName="username"
+  [formControlName]="'username'" - property binding both will work fine
+   
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">email</label>
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="form-control">
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              formControlName="gender"
+              [value]="gender">{{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+15.25 : Reactive Submitting the Form
+--------------------------------------------------------------------------------
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">email</label>
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="form-control">
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              formControlName="gender"
+              [value]="gender">{{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm : FormGroup;
+
+  ngOnInit() {
+    this.signupForm = new FormGroup({
+      'username' : new FormControl(null),
+      'email' : new FormControl(null),
+      'gender': new FormControl('male')
+    });
+  }
+
+  onSubmit() {
+    console.log(this.signupForm);
+  }
+}
+
+
+
+15.26 : Reactive Adding Validation
+--------------------------------------------------------------------------------
+* FormControl() will take 3 argument.
+
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm : FormGroup;
+
+  ngOnInit() {
+    this.signupForm = new FormGroup({
+      'username' : new FormControl(null,Validators.required),
+      'email' : new FormControl(null,[Validators.required, Validators.email]),
+      'gender': new FormControl('male')
+    });
+  }
+
+  onSubmit() {
+    console.log(this.signupForm);
+  }
+}
+
+15.27 : Reactive Getting Access to Controls
+--------------------------------------------------------------------------------
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control">
+            <span *ngIf="!signupForm.get('username').valid && signupForm.get('username').touched"
+            class="help-block">Please enter a valid username!</span>
+        </div>
+        <div class="form-group">
+          <label for="email">email</label>
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="form-control">
+            <span *ngIf="!signupForm.get('email').valid && signupForm.get('email').touched"
+            class="help-block">Please enter a valid email!</span>
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              formControlName="gender"
+              [value]="gender">{{ gender }}
+          </label>
+        </div>
+        <span *ngIf="!signupForm.valid && signupForm.touched"
+         class="help-block">Please enter a valid data!</span>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+app.component.css
+--------------------------------------------------------------------------------
+.container {
+  margin-top: 30px;
+}
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
+15.28 : Reactive Grouping Controls
+--------------------------------------------------------------------------------
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div formGroupName="userData">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  formControlName="username"
+                  class="form-control">
+                  <span *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
+                  class="help-block">Please enter a valid username!</span>
+              </div>
+              <div class="form-group">
+                <label for="email">email</label>
+                <input
+                  type="text"
+                  id="email"
+                  formControlName="email"
+                  class="form-control">
+                  <span *ngIf="!signupForm.get('userData.email').valid && signupForm.get('userData.email').touched"
+                  class="help-block">Please enter a valid email!</span>
+              </div>
+        </div>       
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              formControlName="gender"
+              [value]="gender">{{ gender }}
+          </label>
+        </div>
+        <span *ngIf="!signupForm.valid && signupForm.touched"
+         class="help-block">Please enter a valid data!</span>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm : FormGroup;
+
+  ngOnInit() {
+    this.signupForm = new FormGroup({
+      'userData': new FormGroup({
+      'username' : new FormControl(null,Validators.required),
+      'email' : new FormControl(null,[Validators.required, Validators.email])   
+      }),
+      'gender': new FormControl('male')
+      
+    });
+  }
+
+  onSubmit() {
+    console.log(this.signupForm);
+  }
+}
+
+
+
+15.29 : Reactive Arrays of Form Controls (FormArray)
+--------------------------------------------------------------------------------
+* it will not run
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div formGroupName="userData">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  formControlName="username"
+                  class="form-control">
+                  <span *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
+                  class="help-block">Please enter a valid username!</span>
+              </div>
+              <div class="form-group">
+                <label for="email">email</label>
+                <input
+                  type="text"
+                  id="email"
+                  formControlName="email"
+                  class="form-control">
+                  <span *ngIf="!signupForm.get('userData.email').valid && signupForm.get('userData.email').touched"
+                  class="help-block">Please enter a valid email!</span>
+              </div>
+        </div>       
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              formControlName="gender"
+              [value]="gender">{{ gender }}
+          </label>
+        </div>
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button type="button" (click)="onAddHobby()" class="btn btn-default">Add Hobby</button>
+          <div class="form-group"
+          *ngFor="let hobbyControl of signupForm.get('hobbies').controls; let i = index">
+          <input type="text" class="form-control" [formControlName]="i">
+        </div>
+      </div>
+        <span *ngIf="!signupForm.valid && signupForm.touched"
+         class="help-block">Please enter a valid data!</span>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators,FormArray } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm : FormGroup;
+
+  ngOnInit() {
+    this.signupForm = new FormGroup({
+      'userData': new FormGroup({
+      'username' : new FormControl(null,Validators.required),
+      'email' : new FormControl(null,[Validators.required, Validators.email])   
+      }),
+      'gender': new FormControl('male'),
+      'hobbies': new FormArray([])
+      
+    });
+  }
+
+  onSubmit() {
+    console.log(this.signupForm);
+  }
+
+  onAddHobby() {
+    const control = new FormControl(null, Validators.required);
+    (<FormArray>this.signupForm.get('hobbies')).push(control);
+  }
+}
+
+
+
+15.30 : Reactive Creating Custom Validators
+--------------------------------------------------------------------------------
+
+
+17. Using Pipes to Transform Output
+--------------------------------------------------------------------------------
+* Pipes are feature build in angular 2 which basically used for transform output to your template.
+
+
+17.2 : Using Pipes
+--------------------------------------------------------------------------------
+* We are using 2 pipes here.
+
+uppercase
+date
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name }}</strong> | {{ server.instanceType | uppercase}} | {{ server.started | date}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+17.3 : Parametrizing Pipes
+--------------------------------------------------------------------------------
+
+* date pipe take 1 additional parameter.
+* if we have other paramter we can pass using like
+	
+  server.started | date:'fullDate':2 parameter
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name }}</strong> | {{ server.instanceType | uppercase}} | {{ server.started | date:'fullDate'}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+17.4 : Where to learn more about Pipes
+--------------------------------------------------------------------------------
+https://angular.io/api?query=pipe
+
+17.5 : Chaining Multiple Pipes
+--------------------------------------------------------------------------------
+* We have to apply pipes when in order to trasnsform input.
+
+server.started | uppercase | date:'fullDate' ---> error
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name }}</strong> | {{ server.instanceType | uppercase}} | {{ server.started | date:'fullDate' | uppercase}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+17.6 : Creating a Custom Pipe
+--------------------------------------------------------------------------------
+* transform() will take the value which need to trasnsform and it will return something out.
+
+* @Pipe --> simply give the name of the pipe.
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name | shorten }}</strong> | {{ server.instanceType | uppercase}} | {{ server.started | date:'fullDate' | uppercase}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  servers = [
+    {
+      instanceType: 'medium',
+      name: 'Production',			// removed server here
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'large',
+      name: 'User Database',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'small',
+      name: 'Development Server',
+      status: 'offline',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'small',
+      name: 'Testing Environment Server',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    }
+  ];
+  getStatusClasses(server: {instanceType: string, name: string, status: string, started: Date}) {
+    return {
+      'list-group-item-success': server.status === 'stable',
+      'list-group-item-warning': server.status === 'offline',
+      'list-group-item-danger': server.status === 'critical'
+    };
+  }
+}
+
+ 
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+//import { HttpModule } from '@angular/http';
+
+import { AppComponent } from './app.component';
+import { ShortenPipe } from './shorten.pipe';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ShortenPipe
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    //HttpModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+shorten.pipe.ts
+--------------------------------------------------------------------------------
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'shorten'
+})
+export class ShortenPipe implements PipeTransform {
+  transform(value: any) {
+    if(value.length > 10) {
+      return value.substr(0, 10) + ' ...';
+    }    
+    return value;  
+  }
+}
+
+17.7 : Parametrizing a Custom Pipe
+--------------------------------------------------------------------------------
+
+
+shorten.pipe.ts
+--------------------------------------------------------------------------------
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'shorten'
+})
+export class ShortenPipe implements PipeTransform {
+  transform(value: any,limit: number) {
+    if(value.length > limit) {
+      return value.substr(0, limit) + ' ...';
+    }    
+    return value;  
+  }
+}
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name | shorten:15 }}</strong> | {{ server.instanceType | uppercase}} | {{ server.started | date:'fullDate' | uppercase}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+17.8 : Example Creating a Filter Pipe
+--------------------------------------------------------------------------------
+* generate new pipe.
+
+* pipe transform your output and ngFor also transform output so we can use pipe with ngFor.
+
+
+	ng g p filter
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+        <input type="text" [(ngModel)]="filteredStatus">
+        <hr>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers | filter:filteredStatus:'status'"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name | shorten:15 }}</strong> | {{ server.instanceType | uppercase}} | {{ server.started | date:'fullDate' | uppercase}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  servers = [
+    {
+      instanceType: 'medium',
+      name: 'Production',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'large',
+      name: 'User Database',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'small',
+      name: 'Development Server',
+      status: 'offline',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'small',
+      name: 'Testing Environment Server',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    }
+  ];
+  filteredStatus = '';
+  getStatusClasses(server: {instanceType: string, name: string, status: string, started: Date}) {
+    return {
+      'list-group-item-success': server.status === 'stable',
+      'list-group-item-warning': server.status === 'offline',
+      'list-group-item-danger': server.status === 'critical'
+    };
+  }
+}
+
+
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+//import { HttpModule } from '@angular/http';
+
+import { AppComponent } from './app.component';
+import { ShortenPipe } from './shorten.pipe';
+import { FilterPipe } from './filter.pipe';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ShortenPipe,
+    FilterPipe
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    //HttpModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+filter.pipe.ts
+--------------------------------------------------------------------------------
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter'
+})
+export class FilterPipe implements PipeTransform {
+
+  transform(value: any, filterString: string, propName: string): any {
+    if (value.length === 0 || filterString === '') {
+      return value;
+    }
+    const resultArray = [];
+    for (const item of value) {
+      if (item[propName] === filterString) {
+        resultArray.push(item);
+      }
+    }
+    return resultArray;
+  }
+
+}
+
+
+17.9 : Pure and Impure Pipes (or How to fix the Filter Pipe)
+--------------------------------------------------------------------------------
+* angular is not running pipe again and again whenever input data changes.
+* We can do it using pure: false.
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+        <input type="text" [(ngModel)]="filteredStatus">
+        <br>
+        <button class="btn btn-primary" (click)="onAddServer()">Add Server</button>
+        <br><br>
+        <hr>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers | filter:filteredStatus:'status'"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name | shorten:15 }}</strong> | {{ server.instanceType | uppercase}} | {{ server.started | date:'fullDate' | uppercase}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  servers = [
+    {
+      instanceType: 'medium',
+      name: 'Production',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'large',
+      name: 'User Database',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'small',
+      name: 'Development Server',
+      status: 'offline',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'small',
+      name: 'Testing Environment Server',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    }
+  ];
+  filteredStatus = '';
+  getStatusClasses(server: {instanceType: string, name: string, status: string, started: Date}) {
+    return {
+      'list-group-item-success': server.status === 'stable',
+      'list-group-item-warning': server.status === 'offline',
+      'list-group-item-danger': server.status === 'critical'
+    };
+  }
+  onAddServer() {
+    this.servers.push({
+      instanceType: 'small',
+      name: 'New Server',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    });
+  }
+}
+
+filter.pipe.ts
+--------------------------------------------------------------------------------
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter',
+  pure: false
+})
+export class FilterPipe implements PipeTransform {
+
+  transform(value: any, filterString: string, propName: string): any {
+    if (value.length === 0 || filterString === '') {
+      return value;
+    }
+    const resultArray = [];
+    for (const item of value) {
+      if (item[propName] === filterString) {
+        resultArray.push(item);
+      }
+    }
+    return resultArray;
+  }
+
+}
+
+17.10 : Understanding the async Pipe
+--------------------------------------------------------------------------------
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+        <input type="text" [(ngModel)]="filteredStatus">
+        <br>
+        <button class="btn btn-primary" (click)="onAddServer()">Add Server</button>
+        <br><br>
+        <h2>App Status: {{ appStatus | async}}</h2>
+        <hr>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers | filter:filteredStatus:'status'"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name | shorten:15 }}</strong> | {{ server.instanceType | uppercase}} | {{ server.started | date:'fullDate' | uppercase}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  appStatus = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('stable');
+    }, 2000);
+  });
+  servers = [
+    {
+      instanceType: 'medium',
+      name: 'Production',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'large',
+      name: 'User Database',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'small',
+      name: 'Development Server',
+      status: 'offline',
+      started: new Date(15, 1, 2017)
+    },
+    {
+      instanceType: 'small',
+      name: 'Testing Environment Server',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    }
+  ];
+  filteredStatus = '';
+  getStatusClasses(server: {instanceType: string, name: string, status: string, started: Date}) {
+    return {
+      'list-group-item-success': server.status === 'stable',
+      'list-group-item-warning': server.status === 'offline',
+      'list-group-item-danger': server.status === 'critical'
+    };
+  }
+  onAddServer() {
+    this.servers.push({
+      instanceType: 'small',
+      name: 'New Server',
+      status: 'stable',
+      started: new Date(15, 1, 2017)
+    });
+  }
+}
+
+18. Making Http Requests
+--------------------------------------------------------------------------------
+
+
+18.2 : Introduction _ How Http Requests Work in SPAs
+--------------------------------------------------------------------------------
+
+
+18.3 : Example App _ Backend Setup
+--------------------------------------------------------------------------------
+* Go to Firebase and click on go to console.
+
+  https://console.firebase.google.com/
+  
+* Click on create on project.
+
+  Create a project praveen-angular6
+  
+  
+18.4 : Sending Requests (Example POST Request)
+--------------------------------------------------------------------------------
+* Install http package in angular.
+
+* https://stackoverflow.com/questions/38510369/cannot-find-module-angular-http
+
+  import {HttpClientModule} from '@angular/common/http'
+  import {HttpClient} from '@angular/common/http'
+
+F:\Workspace\TechM\Angular6\http-start>npm install @angular/http@latest
+
+
+app.component.html
+--------------------------------------------------------------------------------
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text" #serverName>
+      <button class="btn btn-primary" (click)="onAddServer(serverName.value)">Add Server</button>
+      <br><br>
+      <button class="btn btn-primary" (click)="onSave()">Save servers</button>
+      <hr>
+      <ul class="list-group" *ngFor="let server of servers">
+        <li class="list-group-item">{{ server.name }} (ID: {{ server.id }})</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+app.component.ts
+--------------------------------------------------------------------------------
+import { Component } from '@angular/core';
+import { ServerService } from './server.service';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  servers = [
+    {
+      name: 'Testserver',
+      capacity: 10,
+      id: this.generateId()
+    },
+    {
+      name: 'Liveserver',
+      capacity: 100,
+      id: this.generateId()
+    }
+  ];
+
+  constructor(private serverService : ServerService){}
+  onAddServer(name: string) {
+    this.servers.push({
+      name: name,
+      capacity: 50,
+      id: this.generateId()
+    });
+  }
+  onSave() {
+    this.serverService.storeServers(this.servers).subscribe(
+      (response) => console.log(response),
+      (error) => console.log(error)
+    );
+  }
+  private generateId() {
+    return Math.round(Math.random() * 10000);
+  }
+}
+
+app.module.ts
+--------------------------------------------------------------------------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http'
+import { AppComponent } from './app.component';
+import { ServerService } from './server.service';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [ServerService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+server.service.ts
+--------------------------------------------------------------------------------
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable()
+export class ServerService {
+ constructor(private http : HttpClient) {}
+
+ storeServers(servers : any[]) {
+    return this.http.post('https://udemy-ng-http.firebaseio.com/data.json',servers)
+ }
+}
+
+
+
+
+18.5 : Adjusting Request Headers
+-------------------------------------------------------------------------------
+
+
+
+Code commited Angular with spring boot with crud operation
+-------------------------------------------------------------------------------
+https://www.javaguides.net/2019/06/angular-8-crud-example-tutorial.html - worked into this
+
+localhost:8081/springboot-crud-rest/api/v1/employees
+
+localhost:8081/springboot-crud-rest/api/v1/employees/1
+
+
+
+
