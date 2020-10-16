@@ -2,8 +2,11 @@
 --------------------------------------------------------------------------------
 	1.Install node.js
 	2.open command prompt and type ng new my-first-app
-	
 
+https://javajee.com/how-an-angular-app-gets-loaded
+
+https://medium.com/@himanshukumar_2699/how-an-angular-app-gets-loaded-and-started-401cf474a025
+	
 1.6 : Editing the First App
 --------------------------------------------------------------------------------
 app.component.html
@@ -104,7 +107,6 @@ F:\Workspace\TechM\Angular6\my-first-app>npm install --save bootstrap   // It wi
 
 2.2 : How an Angular App gets Loaded and Started
 --------------------------------------------------------------------------------
-
 index.html --->  This is the file served by the server,this is the single page which is served by the server.
 
 <app-root> ---> It is our own componenet.
@@ -693,7 +695,7 @@ Image : Planning the App
 3.4 : Setting up the Application
 --------------------------------------------------------------------------------
 * Create a new project.
-* Remove every thing form aoo.component.html
+* Remove every thing form app.component.html
 * Remove title = 'ng4-complate-guide'; form app.component.ts
 * Install bootstrap on project.
 
@@ -803,7 +805,8 @@ F:\Workspace\TechM\Angular6\my-first-app>ng g c server-elements --skipTests
   Ctrl+K+C - comment multiple line
   Ctrl+K+U - uncomment multiple line
   Ctrl+Shift+F - searh in workspace
- 
+  Ctrl+X - delete a line
+  
 * All property defiend inside component are accesible within componenet only not from outside.
 * Input decorator in Angular - @Input() - parent component to child component
 * ref - https://blog.cloudboost.io/input-decorator-in-angular-66f4b55cd951
@@ -1091,7 +1094,7 @@ export class CockpitComponent implements OnInit {
 
 5.12 : Getting Access to the Template _ DOM with @ViewChild
 --------------------------------------------------------------------------------
-* In local refrence we are passing refrence in hmtl page but sometime you want to get access before calling a method.
+* In local refrence we are passing refrence in html page but sometime you want to get access before calling a method.
 
 cockpit.component.html
 ---------------------------
@@ -1421,13 +1424,11 @@ import { FormsModule } from '@angular/forms';
 //import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { BasicHighlightDirective } from './basic-highlight/basic-highlight.directive';
 import { BetterHighlightDirective } from './better-highlight/better-highlight.directive'; // better highlight directive
 
 @NgModule({
   declarations: [
     AppComponent,
-    BasicHighlightDirective,
     BetterHighlightDirective,	// better highlight directive
   ],
   imports: [
@@ -1816,8 +1817,6 @@ app.component.html
 --------------------------------------------------------------------------------
 9.1 : Module Introduction
 --------------------------------------------------------------------------------
-
-
 
 9.2 : Why would you Need Services
 --------------------------------------------------------------------------------
@@ -2421,7 +2420,7 @@ app.component.html
 </div>
 
 * Now it will not reload the page.
-* routerLink will laad form componenet register in app.module.ts
+* routerLink will load form componenet register in app.module.ts
 
 
 11.6 : Understanding Navigation Paths
@@ -2494,7 +2493,7 @@ app.component.html
    </ul>
 
 * but some how home is always marked as active,that means it doesn't work correct.
-[routerLinkActiveOptions]="{exact : true}" - property dinding and it will take java script object.
+[routerLinkActiveOptions]="{exact : true}" - property binding and it will take java script object.
 
 app.component.html
 --------------------------------------------------------------------------------
@@ -3206,12 +3205,6 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    // const myNumbers = Observable.interval(1000,);
-    // myNumbers.subscribe(
-    //   (number:number) => {
-    //     console.log(number);
-    //   }
-    // );
     const myObservables = Observable.create((observer : Observer<string>) => {
           setTimeout(() => {
             observer.next('first package');
@@ -3261,6 +3254,7 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   ngOnInit() {
     const myNumbers = Observable.interval(1000,);
+	
     this.numberObsSubscription = myNumbers.subscribe(
       (number:number) => {
         console.log(number);
@@ -4964,7 +4958,6 @@ app.component.html
 * generate new pipe.
 
 * pipe transform your output and ngFor also transform output so we can use pipe with ngFor.
-
 
 	ng g p filter
 
