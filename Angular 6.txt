@@ -111,8 +111,8 @@ index.html --->  This is the file served by the server,this is the single page w
 
 <app-root> ---> It is our own componenet.
 
-index.html ---> app.component.ts ---> app.component.html  
-								 ---> app.component.css
+index.html ---> main.ts ---> app.module.ts ---> app.component.ts ---> app.component.html  
+																 ---> app.component.css
 
 main.ts ---> This is the file executed first.
 
@@ -439,6 +439,44 @@ servers.component.html
 <button class="btn btn-primary" [disabled] = "!allowNewServer" (click)="onCreateServer()">Add Server</button>
 <p>{{ serverCreationStatus  }}</p>
 
+NOTE : Example of mouse event for event binding.
+
+		servers.component.html
+		-----------------------
+		<div>
+			<div>
+			  {{ text }}
+			</div>
+			<button class="btn" (click)="submit($event)" (mousemove)="mouseMove($event)">
+			  Submit
+			</button>
+			<div>
+			  {{x}} | {{y}}
+			</div>
+		</div>
+
+		server.component.ts
+		-----------------------
+		import { Component } from '@angular/core';
+
+		@Component({
+			selector : 'app-server',
+			templateUrl : './server.component.html'
+		})
+		export class ServerComponent {
+		  public text: String = 'Text Not submitted yet.';
+		  public x: Number;
+		  public y: Number;
+
+		  submit($event: Event) {
+			this.text = 'Text Submitted successfully!';
+			console.log($event);
+		  }
+		  mouseMove($event: MouseEvent) {
+			this.x = $event.x;
+			this.y = $event.y;
+		  }
+		}
 
 2.18 : Passing and Using Data with Event Binding
 -------------------------------------------------------------------------
@@ -810,7 +848,8 @@ F:\Workspace\TechM\Angular6\my-first-app>ng g c server-elements --skipTests
 * All property defiend inside component are accesible within componenet only not from outside.
 * Input decorator in Angular - @Input() - parent component to child component
 * ref - https://blog.cloudboost.io/input-decorator-in-angular-66f4b55cd951
-
+		https://medium.com/@madhavmahesh/list-of-all-decorators-available-in-angular-71bdf4ad6976
+		
 * go to browser : http://localhost:4200
 
 app.component.ts
@@ -1671,7 +1710,6 @@ export class UnlessDirective {
 
 *set will change into method.means it is still a property and it will execute when property changes. 
 
-
 * UnlessDirective should be imported into app.module.ts.
 
 app.component.html
@@ -2291,6 +2329,8 @@ export class NewAccountComponent {
 11.2 : Why do we need a Router
 --------------------------------------------------------------------------------
 * We can't switch in multilpe tabs in UI for that we require routing.
+
+
 
 
 11.4 : Setting up and Loading Routes
@@ -3184,14 +3224,14 @@ export class HomeComponent implements OnInit {
 
 * next() - just pushes the next data package
 
-* After calling  observer.complete(); no output is will show.
+* After calling  observer.complete(); no output it will show.
 
 
 home.component.ts
 --------------------------------------------------------------------------------
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { interval } from 'rxjs/observable/interval';
+import { interval } from 'rxjs/Observable/interval';
 import 'rxjs/Rx';
 import { Observer } from 'rxjs/Observer';
 
@@ -3236,7 +3276,7 @@ home.component.ts
 --------------------------------------------------------------------------------
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { interval } from 'rxjs/observable/interval';
+import { interval } from 'rxjs/Observable/interval';
 import 'rxjs/Rx';
 import { Observer } from 'rxjs/Observer';
 import { Subscription } from 'rxjs/Subscription';
