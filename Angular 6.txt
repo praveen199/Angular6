@@ -337,7 +337,7 @@ Suppose we want to show code of type script to html we can do it using
 2.Propert Binding [property]="data"
 
 Html to type script we can do it using
-1.Event Binding (event) ="expression"
+1.Event Binding (event) = "expression"
 
 combination of both is called as two way binding [(ngModel)] = "data"
 
@@ -1853,6 +1853,8 @@ app.component.html
 
 9. Using Services _ Dependency Injection(services-start in git)
 --------------------------------------------------------------------------------
+Dependency injection is the ability to add the functionality of components at runtime.
+
 9.1 : Module Introduction
 --------------------------------------------------------------------------------
 
@@ -2330,6 +2332,7 @@ export class NewAccountComponent {
 --------------------------------------------------------------------------------
 * We can't switch in multilpe tabs in UI for that we require routing.
 
+Example : https://zeroesandones.medium.com/how-to-create-navigation-in-angular-9-application-using-angular-router-6ee3ff182eb6
 
 
 
@@ -3458,7 +3461,9 @@ export class AppComponent implements OnInit{
 --------------------------------------------------------------------------------
 * map operator will map the data which you will use to any observable as per your choice.
 * unlock operator we have to use import 'rxjs/Rx';
-
+  
+* https://blog.logrocket.com/use-rxjs-operators-to-consume-observables/
+	
 home.component.ts
 --------------------------------------------------------------------------------
 import { Component, OnInit, OnDestroy } from '@angular/core';
